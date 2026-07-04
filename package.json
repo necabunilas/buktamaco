@@ -1,0 +1,22 @@
+{
+  "name": "buktamaco",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "db:push": "drizzle-kit push",
+    "db:seed": "node lib/db/seed.mjs"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.8.1",
+    "drizzle-orm": "^0.38.3",
+    "next": "^15.1.6",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.30.2"
+  }
+}
