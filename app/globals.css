@@ -1,9 +1,12 @@
 :root {
-  --bg: #fbfaf6;
-  --ink: #2b2b2b;
-  --muted: #6b6b6b;
-  --accent: #3a6ea5;
-  --border: #e3e0d6;
+  --bg: #f6efdf;        /* soft cream page */
+  --ink: #2b2118;       /* dark brown-black text */
+  --muted: #7a6f5f;
+  --accent: #c8102e;    /* brand red */
+  --accent-dark: #a20d24;
+  --gold: #e3a83a;      /* brand gold accent */
+  --cream: #efe7d3;     /* cream used on red */
+  --border: #e6dcc4;
   --card: #ffffff;
   --ok: #2e7d32;
   --warn: #c62828;
@@ -27,18 +30,26 @@ a:hover { text-decoration: underline; }
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 1rem 1.5rem;
-  background: var(--card);
-  border-bottom: 1px solid var(--border);
+  padding: 0.85rem 1.5rem;
+  background: var(--accent);
+  border-bottom: 3px solid var(--gold);
 }
 
 .site-header .brand {
-  font-size: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.5rem;
   font-weight: 700;
-  color: var(--ink);
+  letter-spacing: 0.5px;
+  color: var(--cream);
 }
+.site-header .brand:hover { text-decoration: none; }
+.site-header .brand img { height: 34px; width: auto; display: block; }
 
-.site-header nav a { margin-left: 1.25rem; }
+.site-header nav a { margin-left: 1.25rem; color: var(--cream); }
+.site-header nav a:hover { color: #fff; }
 
 .container {
   max-width: 960px;
@@ -47,9 +58,10 @@ a:hover { text-decoration: underline; }
 }
 
 .site-footer {
-  border-top: 1px solid var(--border);
+  border-top: 3px solid var(--gold);
+  background: var(--accent);
   padding: 1.5rem;
-  color: var(--muted);
+  color: var(--cream);
   text-align: center;
   font-size: 0.9rem;
 }
@@ -57,8 +69,16 @@ a:hover { text-decoration: underline; }
 .hero {
   padding: 2rem 0;
 }
-.hero h1 { font-size: 2rem; margin: 0 0 0.5rem; }
+.hero h1 {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 2.4rem;
+  line-height: 1.15;
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}
 .hero p { color: var(--muted); font-size: 1.1rem; }
+
+h1, h2 { font-family: var(--font-display, Georgia, serif); color: var(--accent-dark); }
 
 .card {
   background: var(--card);

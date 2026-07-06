@@ -5,22 +5,23 @@ import { inArray } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 
 // Creates a PENDING order from the customer's cart.
-// The cart is submitted as a JSON string: [{ productId, qty }]
+// Each product's quantity is submitted as its own field: qty_<productId>
 export async function createOrder(formData) {
   const customerName = (formData.get('customerName') || '').toString().trim();
   const customerContact = (formData.get('customerContact') || '').toString().trim();
   const note = (formData.get('note') || '').toString().trim();
-  const cartRaw = (formData.get('cart') || '[]').toString();
 
   if (!customerName) throw new Error('Customer name is required.');
+  if (!customerContact) throw new Error('Contact number is required.');
 
-  let cart;
-  try {
-    cart = JSON.parse(cartRaw);
-  } catch {
-    throw new Error('Invalid cart.');
+  // Collect every qty_<productId> field with a positive quantity.
+  const cart = [];
+  for (const [key, value] of formData.entries()) {
+    if (!key.startsWith('qty_')) continue;
+    const productId = parseInt(key.slice(4), 10);
+    const qty = parseInt(value, 10);
+    if (productId && qty > 0) cart.push({ productId, qty });
   }
-  cart = (cart || []).filter((c) => c && c.productId && c.qty > 0);
   if (cart.length === 0) throw new Error('Your cart is empty.');
 
   const ids = cart.map((c) => c.productId);

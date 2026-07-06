@@ -2,6 +2,7 @@ import { db, orders } from '@/lib/db';
 import { desc } from 'drizzle-orm';
 import { isStaff } from '@/lib/auth';
 import { redirect } from 'next/navigation';
+import { formatPHDateTime } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,7 +35,7 @@ export default async function AdminOrders() {
                 <td>{o.customerName}</td>
                 <td><span className="badge">{o.status}</span></td>
                 <td style={{ textAlign: 'right' }}>₱{o.total.toFixed(2)}</td>
-                <td style={{ color: 'var(--muted)' }}>{o.createdAt}</td>
+                <td style={{ color: 'var(--muted)' }}>{formatPHDateTime(o.createdAt)}</td>
                 <td><a href={`/admin/orders/${o.id}`}>Open</a></td>
               </tr>
             ))}

@@ -57,25 +57,26 @@ export async function markPaid(formData) {
 
   const items = db.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
 
-  const tx = db.transaction(() => {
+  // Drizzle (better-sqlite3) runs this callback immediately and returns its result.
+  db.transaction((tx) => {
     // Verify and decrement stock for each line.
     for (const it of items) {
-      const inv = db.select().from(inventory).where(eq(inventory.productId, it.productId)).get();
+      const inv = tx.select().from(inventory).where(eq(inventory.productId, it.productId)).get();
       if (!inv || inv.qtyOnHand < it.qty) {
         throw new Error('Not enough stock to fulfill this order.');
       }
     }
     for (const it of items) {
-      db.update(inventory)
+      tx.update(inventory)
         .set({ qtyOnHand: sql`${inventory.qtyOnHand} - ${it.qty}`, updatedAt: sql`(datetime('now'))` })
         .where(eq(inventory.productId, it.productId))
         .run();
-      db.insert(inventoryMovements)
+      tx.insert(inventoryMovements)
         .values({ productId: it.productId, change: -it.qty, reason: 'sale', orderId })
         .run();
     }
 
-    db.update(orders)
+    tx.update(orders)
       .set({
         status: 'PAID',
         cashReceived,
@@ -86,12 +87,10 @@ export async function markPaid(formData) {
       .run();
 
     // Issue a sequential receipt number: BTC-000001
-    const count = db.select({ c: sql`count(*)` }).from(receipts).get();
+    const count = tx.select({ c: sql`count(*)` }).from(receipts).get();
     const receiptNo = `BTC-${String(Number(count.c) + 1).padStart(6, '0')}`;
-    db.insert(receipts).values({ orderId, receiptNo }).run();
+    tx.insert(receipts).values({ orderId, receiptNo }).run();
   });
-
-  tx();
 
   revalidatePath(`/admin/orders/${orderId}`);
   revalidatePath('/admin/orders');

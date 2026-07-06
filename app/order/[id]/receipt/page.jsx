@@ -2,6 +2,7 @@ import { db, orders, orderItems, products, receipts } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { notFound } from 'next/navigation';
 import PrintButton from './PrintButton';
+import { formatPHDateTime } from '@/lib/format';
 import './receipt.css';
 
 export const dynamic = 'force-dynamic';
@@ -42,7 +43,7 @@ export default async function ReceiptPage({ params }) {
         <div className="receipt-meta">
           <div><span>Receipt</span><strong>{receipt.receiptNo}</strong></div>
           <div><span>Order</span><strong>#{order.id}</strong></div>
-          <div><span>Date</span><strong>{order.paidAt}</strong></div>
+          <div><span>Date</span><strong>{formatPHDateTime(order.paidAt)}</strong></div>
           <div><span>Customer</span><strong>{order.customerName}</strong></div>
         </div>
 

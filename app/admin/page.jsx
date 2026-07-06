@@ -13,7 +13,7 @@ export default async function AdminDashboard() {
   const paidToday = db
     .select({ c: sql`count(*)`, total: sql`coalesce(sum(total),0)` })
     .from(orders)
-    .where(sql`status = 'PAID' AND date(paid_at) = date('now')`)
+    .where(sql`status = 'PAID' AND date(paid_at, '+8 hours') = date('now', '+8 hours')`)
     .get();
 
   const lowStock = db
@@ -43,17 +43,22 @@ export default async function AdminDashboard() {
         </div>
       </div>
 
-      <h2 style={{ marginTop: '1.5rem' }}>Low stock</h2>
+      <h2 style={{ marginTop: '1.5rem' }}>Stock alerts</h2>
       {lowStock.length === 0 ? (
-        <p style={{ color: 'var(--muted)' }}>Everything is above its reorder level.</p>
+        <p style={{ color: 'var(--ok)' }}>✓ All products are well stocked — nothing needs restocking.</p>
       ) : (
-        <ul>
-          {lowStock.map((p, i) => (
-            <li key={i} className="low-stock">
-              {p.name} — {p.qty} left (reorder at {p.reorder})
-            </li>
-          ))}
-        </ul>
+        <>
+          <p style={{ color: 'var(--warn)', fontWeight: 600, margin: '0 0 0.5rem' }}>
+            {lowStock.length} item{lowStock.length > 1 ? 's' : ''} running low:
+          </p>
+          <ul>
+            {lowStock.map((p, i) => (
+              <li key={i} className="low-stock">
+                {p.name} — {p.qty} left (reorder at {p.reorder})
+              </li>
+            ))}
+          </ul>
+        </>
       )}
       <p style={{ marginTop: '1rem' }}>
         <a className="btn" href="/admin/orders">Go to orders</a>
