@@ -13,23 +13,16 @@ export default async function AdminLayout({ children }) {
 
   return (
     <div>
-      <div
-        style={{
-          display: 'flex',
-          gap: '1rem',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          borderBottom: '1px solid var(--border)',
-          paddingBottom: '0.75rem',
-          marginBottom: '1.25rem',
-        }}
-      >
-        <nav style={{ display: 'flex', gap: '1rem' }}>
-          <a href="/admin">Dashboard</a>
-          <a href="/admin/orders">Orders</a>
-          <a href="/admin/inventory">Inventory</a>
-          <a href="/admin/products">Products</a>
-        </nav>
+      <div className="admin-bar">
+        <div className="admin-bar-left">
+          <span className="admin-badge">Staff</span>
+          <nav className="admin-nav">
+            <a href="/admin">Dashboard</a>
+            <a href="/admin/orders">Orders</a>
+            <a href="/admin/inventory">Inventory</a>
+            <a href="/admin/products">Products</a>
+          </nav>
+        </div>
         <form action={logout}>
           <button className="btn secondary" type="submit">Log out</button>
         </form>

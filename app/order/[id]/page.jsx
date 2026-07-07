@@ -38,7 +38,7 @@ export default async function OrderStatusPage({ params }) {
     <div>
       <h1>Order #{order.id}</h1>
       <p>
-        <span className="badge">{order.status}</span>{' '}
+        <span className={`badge status-${order.status}`}>{order.status}</span>{' '}
         {STATUS_LABEL[order.status] || ''}
       </p>
 

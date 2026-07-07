@@ -33,7 +33,7 @@ export default async function AdminOrders() {
               <tr key={o.id}>
                 <td>{o.id}</td>
                 <td>{o.customerName}</td>
-                <td><span className="badge">{o.status}</span></td>
+                <td><span className={`badge status-${o.status}`}>{o.status}</span></td>
                 <td style={{ textAlign: 'right' }}>₱{o.total.toFixed(2)}</td>
                 <td style={{ color: 'var(--muted)' }}>{formatPHDateTime(o.createdAt)}</td>
                 <td><a href={`/admin/orders/${o.id}`}>Open</a></td>

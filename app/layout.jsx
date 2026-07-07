@@ -11,9 +11,8 @@ export default function RootLayout({ children }) {
       <body>
         <header className="site-header">
           <a className="brand" href="/">
-            {/* Save the carabao logo to /public/logo.png to show it here */}
-            <img src="/logo.png" alt="" />
-            BukTamaCo
+            <img src="/logo.jpeg" alt="" />
+            BUKTAMACO
           </a>
           <nav>
             <a href="/products">Products</a>

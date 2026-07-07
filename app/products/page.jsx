@@ -27,19 +27,23 @@ export default function ProductsPage() {
       {rows.length === 0 ? (
         <p>No products available yet.</p>
       ) : (
-        <div className="grid" style={{ marginTop: '1rem' }}>
+        <div className="grid" style={{ marginTop: '1.5rem' }}>
           {rows.map((p) => (
-            <div className="card" key={p.id}>
-              <h3 style={{ margin: '0 0 0.25rem' }}>{p.name}</h3>
-              <p style={{ margin: '0 0 0.5rem', color: 'var(--muted)' }}>
-                {p.flavor ? p.flavor : 'Plain'} · {p.unit}
-              </p>
-              <p style={{ fontWeight: 600, margin: '0 0 0.5rem' }}>
-                ₱{p.price.toFixed(2)}
-              </p>
-              <span className={p.qty > 0 ? 'badge' : 'badge low-stock'}>
-                {p.qty > 0 ? `${p.qty} in stock` : 'Out of stock'}
-              </span>
+            <div className="product-card" key={p.id}>
+              <div className="product-media">
+                {p.flavor && <span className="flavor-tag">{p.flavor}</span>}
+                <img src="/logo.jpeg" alt="" />
+              </div>
+              <div className="product-body">
+                <h3 className="product-name">{p.name}</h3>
+                <span className="product-unit">{p.flavor ? p.flavor : 'Plain'} · {p.unit}</span>
+                <span className="product-price">₱{p.price.toFixed(2)}</span>
+                <div className="product-foot">
+                  <span className={p.qty > 0 ? 'badge in-stock' : 'badge out'}>
+                    {p.qty > 0 ? `${p.qty} in stock` : 'Out of stock'}
+                  </span>
+                </div>
+              </div>
             </div>
           ))}
         </div>

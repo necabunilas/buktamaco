@@ -85,3 +85,10 @@ Statuses: `PENDING → CONFIRMED → PAID → COMPLETED`, plus `CANCELLED`.
 - Flavor list for flavored carabao milk
 - Prices per product
 - Shop branding/contact details for info page
+
+## Future features (post-deployment)
+- SMS notifications to customers on order events (confirmed / paid / ready for pickup).
+  - Call an SMS gateway API from server actions (confirmOrder / markPaid).
+  - Provider: Semaphore recommended (PH-focused, ~P0.50/SMS, custom sender ID "BUKTAMACO").
+  - Needs a paid provider account + API key (env var) + sender-ID registration.
+  - Wire in after Turso + Vercel deployment.

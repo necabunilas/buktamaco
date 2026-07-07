@@ -44,24 +44,30 @@ export default function OrderForm({ products }) {
     <form action={createOrder} style={{ marginTop: '1rem' }}>
       <div className="grid">
         {products.map((p) => (
-          <div className="card" key={p.id}>
-            <h3 style={{ margin: '0 0 0.25rem' }}>{p.name}</h3>
-            <p style={{ margin: '0 0 0.5rem', color: 'var(--muted)' }}>
-              {p.flavor ? p.flavor : 'Plain'} · {p.unit}
-            </p>
-            <p style={{ fontWeight: 600, margin: '0 0 0.5rem' }}>₱{p.price.toFixed(2)}</p>
-            <label htmlFor={`qty-${p.id}`}>Quantity (max {p.qty})</label>
-            <input
-              id={`qty-${p.id}`}
-              name={`qty_${p.id}`}
-              type="text"
-              inputMode="numeric"
-              value={qtys[p.id] ?? ''}
-              placeholder="0"
-              onChange={(e) => setQty(p, e.target.value)}
-              onBlur={() => clampQty(p)}
-              style={{ width: '100%' }}
-            />
+          <div className="product-card" key={p.id}>
+            <div className="product-media">
+              {p.flavor && <span className="flavor-tag">{p.flavor}</span>}
+              <img src="/logo.jpeg" alt="" />
+            </div>
+            <div className="product-body">
+              <h3 className="product-name">{p.name}</h3>
+              <span className="product-unit">{p.flavor ? p.flavor : 'Plain'} · {p.unit}</span>
+              <span className="product-price">₱{p.price.toFixed(2)}</span>
+              <div className="product-foot">
+                <label htmlFor={`qty-${p.id}`}>Quantity (max {p.qty})</label>
+                <input
+                  id={`qty-${p.id}`}
+                  name={`qty_${p.id}`}
+                  type="text"
+                  inputMode="numeric"
+                  value={qtys[p.id] ?? ''}
+                  placeholder="0"
+                  onChange={(e) => setQty(p, e.target.value)}
+                  onBlur={() => clampQty(p)}
+                  style={{ width: '100%' }}
+                />
+              </div>
+            </div>
           </div>
         ))}
       </div>

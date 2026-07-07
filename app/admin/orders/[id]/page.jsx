@@ -37,7 +37,7 @@ export default async function AdminOrderDetail({ params, searchParams }) {
       <p><a href="/admin/orders">← All orders</a></p>
       <h1>Order #{order.id}</h1>
       <p>
-        <span className="badge">{order.status}</span>
+        <span className={`badge status-${order.status}`}>{order.status}</span>
       </p>
 
       <div className="card">
