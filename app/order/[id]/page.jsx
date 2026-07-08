@@ -17,10 +17,10 @@ export default async function OrderStatusPage({ params }) {
   const orderId = parseInt(id, 10);
   if (isNaN(orderId)) notFound();
 
-  const order = db.select().from(orders).where(eq(orders.id, orderId)).get();
+  const order = await db.select().from(orders).where(eq(orders.id, orderId)).get();
   if (!order) notFound();
 
-  const items = db
+  const items = await db
     .select({
       name: products.name,
       flavor: products.flavor,
@@ -32,7 +32,7 @@ export default async function OrderStatusPage({ params }) {
     .where(eq(orderItems.orderId, orderId))
     .all();
 
-  const receipt = db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
+  const receipt = await db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
 
   return (
     <div>

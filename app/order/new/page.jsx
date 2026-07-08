@@ -4,8 +4,8 @@ import OrderForm from './OrderForm';
 
 export const dynamic = 'force-dynamic';
 
-export default function NewOrderPage() {
-  const rows = db
+export default async function NewOrderPage() {
+  const rows = await db
     .select({
       id: products.id,
       name: products.name,

@@ -27,7 +27,7 @@ async function requireStaff() {
 export async function confirmOrder(formData) {
   await requireStaff();
   const orderId = Number(formData.get('orderId'));
-  db.update(orders).set({ status: 'CONFIRMED' }).where(eq(orders.id, orderId)).run();
+  await db.update(orders).set({ status: 'CONFIRMED' }).where(eq(orders.id, orderId)).run();
   revalidatePath(`/admin/orders/${orderId}`);
   revalidatePath('/admin/orders');
 }
@@ -35,7 +35,7 @@ export async function confirmOrder(formData) {
 export async function cancelOrder(formData) {
   await requireStaff();
   const orderId = Number(formData.get('orderId'));
-  db.update(orders).set({ status: 'CANCELLED' }).where(eq(orders.id, orderId)).run();
+  await db.update(orders).set({ status: 'CANCELLED' }).where(eq(orders.id, orderId)).run();
   revalidatePath(`/admin/orders/${orderId}`);
   revalidatePath('/admin/orders');
 }
@@ -46,7 +46,7 @@ export async function markPaid(formData) {
   const orderId = Number(formData.get('orderId'));
   const cashReceived = parseFloat(formData.get('cashReceived'));
 
-  const order = db.select().from(orders).where(eq(orders.id, orderId)).get();
+  const order = await db.select().from(orders).where(eq(orders.id, orderId)).get();
   if (!order) throw new Error('Order not found.');
   if (order.status === 'PAID' || order.status === 'COMPLETED') {
     throw new Error('Order is already paid.');
@@ -55,28 +55,28 @@ export async function markPaid(formData) {
     redirect(`/admin/orders/${orderId}?error=cash`);
   }
 
-  const items = db.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
+  const items = await db.select().from(orderItems).where(eq(orderItems.orderId, orderId)).all();
 
-  // Drizzle (better-sqlite3) runs this callback immediately and returns its result.
-  db.transaction((tx) => {
+  // libSQL runs the transaction callback and awaits each statement.
+  await db.transaction(async (tx) => {
     // Verify and decrement stock for each line.
     for (const it of items) {
-      const inv = tx.select().from(inventory).where(eq(inventory.productId, it.productId)).get();
+      const inv = await tx.select().from(inventory).where(eq(inventory.productId, it.productId)).get();
       if (!inv || inv.qtyOnHand < it.qty) {
         throw new Error('Not enough stock to fulfill this order.');
       }
     }
     for (const it of items) {
-      tx.update(inventory)
+      await tx.update(inventory)
         .set({ qtyOnHand: sql`${inventory.qtyOnHand} - ${it.qty}`, updatedAt: sql`(datetime('now'))` })
         .where(eq(inventory.productId, it.productId))
         .run();
-      tx.insert(inventoryMovements)
+      await tx.insert(inventoryMovements)
         .values({ productId: it.productId, change: -it.qty, reason: 'sale', orderId })
         .run();
     }
 
-    tx.update(orders)
+    await tx.update(orders)
       .set({
         status: 'PAID',
         cashReceived,
@@ -87,9 +87,9 @@ export async function markPaid(formData) {
       .run();
 
     // Issue a sequential receipt number: BTC-000001
-    const count = tx.select({ c: sql`count(*)` }).from(receipts).get();
+    const count = await tx.select({ c: sql`count(*)` }).from(receipts).get();
     const receiptNo = `BTC-${String(Number(count.c) + 1).padStart(6, '0')}`;
-    tx.insert(receipts).values({ orderId, receiptNo }).run();
+    await tx.insert(receipts).values({ orderId, receiptNo }).run();
   });
 
   revalidatePath(`/admin/orders/${orderId}`);
@@ -111,14 +111,14 @@ export async function addProduct(formData) {
   if (!name || !sku) redirect('/admin/products?error=missing');
   if (isNaN(price) || price < 0) redirect('/admin/products?error=price');
 
-  const existing = db.select().from(products).where(eq(products.sku, sku)).get();
+  const existing = await db.select().from(products).where(eq(products.sku, sku)).get();
   if (existing) redirect('/admin/products?error=sku');
 
-  const r = db.insert(products).values({ name, sku, unit, flavor, price, active: true }).run();
+  const r = await db.insert(products).values({ name, sku, unit, flavor, price, active: true }).run();
   const productId = Number(r.lastInsertRowid);
-  db.insert(inventory).values({ productId, qtyOnHand: stock, reorderLevel: 10 }).run();
+  await db.insert(inventory).values({ productId, qtyOnHand: stock, reorderLevel: 10 }).run();
   if (stock > 0) {
-    db.insert(inventoryMovements).values({ productId, change: stock, reason: 'restock' }).run();
+    await db.insert(inventoryMovements).values({ productId, change: stock, reason: 'restock' }).run();
   }
   revalidatePath('/admin/products');
   revalidatePath('/admin/inventory');
@@ -132,7 +132,7 @@ export async function updateProduct(formData) {
   const active = formData.get('active') === 'on';
   if (isNaN(price) || price < 0) redirect('/admin/products?error=price');
 
-  db.update(products).set({ price, active }).where(eq(products.id, productId)).run();
+  await db.update(products).set({ price, active }).where(eq(products.id, productId)).run();
   revalidatePath('/admin/products');
   revalidatePath('/products');
   redirect('/admin/products?ok=updated');
@@ -144,11 +144,11 @@ export async function restock(formData) {
   const amount = parseInt(formData.get('amount'), 10);
   if (isNaN(amount) || amount === 0) return;
 
-  db.update(inventory)
+  await db.update(inventory)
     .set({ qtyOnHand: sql`${inventory.qtyOnHand} + ${amount}`, updatedAt: sql`(datetime('now'))` })
     .where(eq(inventory.productId, productId))
     .run();
-  db.insert(inventoryMovements)
+  await db.insert(inventoryMovements)
     .values({ productId, change: amount, reason: amount > 0 ? 'restock' : 'adjustment' })
     .run();
   revalidatePath('/admin/inventory');

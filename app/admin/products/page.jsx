@@ -17,7 +17,7 @@ export default async function AdminProducts({ searchParams }) {
   if (!(await isStaff())) redirect('/admin/login');
   const sp = await searchParams;
 
-  const rows = db
+  const rows = await db
     .select({
       id: products.id,
       name: products.name,

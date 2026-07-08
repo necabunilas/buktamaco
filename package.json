@@ -10,7 +10,7 @@
     "db:seed": "node lib/db/seed.mjs"
   },
   "dependencies": {
-    "better-sqlite3": "^11.8.1",
+    "@libsql/client": "^0.17.4",
     "drizzle-orm": "^0.38.3",
     "next": "^15.1.6",
     "react": "^19.0.0",

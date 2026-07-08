@@ -25,7 +25,7 @@ export async function createOrder(formData) {
   if (cart.length === 0) throw new Error('Your cart is empty.');
 
   const ids = cart.map((c) => c.productId);
-  const found = db.select().from(products).where(inArray(products.id, ids)).all();
+  const found = await db.select().from(products).where(inArray(products.id, ids)).all();
   const priceById = new Map(found.map((p) => [p.id, p.price]));
 
   let total = 0;
@@ -36,14 +36,14 @@ export async function createOrder(formData) {
     return { productId: c.productId, qty: c.qty, unitPrice };
   });
 
-  const result = db
+  const result = await db
     .insert(orders)
     .values({ customerName, customerContact, note, status: 'PENDING', total })
     .run();
   const orderId = Number(result.lastInsertRowid);
 
   for (const l of lines) {
-    db.insert(orderItems).values({ orderId, ...l }).run();
+    await db.insert(orderItems).values({ orderId, ...l }).run();
   }
 
   redirect(`/order/${orderId}`);

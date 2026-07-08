@@ -3,8 +3,8 @@ import { eq } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
-export default function ProductsPage() {
-  const rows = db
+export default async function ProductsPage() {
+  const rows = await db
     .select({
       id: products.id,
       name: products.name,

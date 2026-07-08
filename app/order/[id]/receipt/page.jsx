@@ -12,14 +12,14 @@ export default async function ReceiptPage({ params }) {
   const orderId = parseInt(id, 10);
   if (isNaN(orderId)) notFound();
 
-  const order = db.select().from(orders).where(eq(orders.id, orderId)).get();
+  const order = await db.select().from(orders).where(eq(orders.id, orderId)).get();
   if (!order) notFound();
 
-  const receipt = db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
+  const receipt = await db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
   // Receipts only exist for paid orders.
   if (!receipt || order.status !== 'PAID') notFound();
 
-  const items = db
+  const items = await db
     .select({
       name: products.name,
       flavor: products.flavor,

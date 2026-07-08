@@ -2,8 +2,9 @@
 export default {
   schema: './lib/db/schema.js',
   out: './lib/db/migrations',
-  dialect: 'sqlite',
+  dialect: 'turso',
   dbCredentials: {
-    url: './buktamaco.db',
+    url: process.env.TURSO_DATABASE_URL || 'file:buktamaco.db',
+    authToken: process.env.TURSO_AUTH_TOKEN,
   },
 };

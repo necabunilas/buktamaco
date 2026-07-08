@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export default async function AdminOrders() {
   if (!(await isStaff())) redirect('/admin/login');
 
-  const rows = db.select().from(orders).orderBy(desc(orders.createdAt)).all();
+  const rows = await db.select().from(orders).orderBy(desc(orders.createdAt)).all();
 
   return (
     <div>

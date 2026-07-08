@@ -9,7 +9,7 @@ export const dynamic = 'force-dynamic';
 export default async function AdminInventory() {
   if (!(await isStaff())) redirect('/admin/login');
 
-  const rows = db
+  const rows = await db
     .select({
       productId: products.id,
       name: products.name,
