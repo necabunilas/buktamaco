@@ -131,31 +131,45 @@ h2 { font-size: 1.6rem; margin-top: 0; }
   margin: 0 auto;
 }
 
-.hero { padding: 2rem 0 1rem; max-width: 680px; }
+.hero { padding: 2.25rem 1rem 1.5rem; max-width: 660px; margin: 0 auto; text-align: center; }
 .hero-title {
-  font-size: 2.6rem;
-  line-height: 1.08;
+  font-size: 2.7rem;
+  line-height: 1.1;
   color: var(--accent-dark);
-  margin: 0 0 0.75rem;
+  margin: 0 0 0.9rem;
 }
-.hero p { color: var(--muted); font-size: 1.15rem; margin: 0 0 1.1rem; }
-.link-cta { margin-left: 1rem; font-weight: 700; }
+.hero-sub { color: var(--muted); font-size: 1.15rem; margin: 0 auto 1.4rem; max-width: 540px; }
+.hero-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 1rem;
+}
+.link-cta { font-weight: 700; }
 
-/* Trust row */
+/* Trust band */
 .trust-row {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1.5rem;
+  align-items: stretch;
   justify-content: center;
-  align-items: center;
   background: var(--cream);
-  border-radius: 14px;
-  padding: 0.9rem 1.25rem;
-  margin: 0.5rem 0 2.5rem;
-  font-weight: 700;
-  color: var(--accent-dark);
+  border-radius: 16px;
+  padding: 1rem 0.5rem;
+  margin: 0.5rem 0 2.75rem;
 }
-.trust-row span { white-space: nowrap; }
+.trust-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 1rem;
+  border-left: 1px solid rgba(163, 0, 0, 0.14);
+}
+.trust-item:first-child { border-left: none; }
+.trust-icon { font-size: 1.7rem; line-height: 1; }
+.trust-label { font-weight: 700; color: var(--accent-dark); font-size: 0.98rem; }
 
 /* Heritage story */
 .story {
@@ -345,6 +359,21 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   font-weight: 600;
 }
 
+/* ---------- Filter tabs ---------- */
+.filter-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.filter-tab {
+  padding: 0.4rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--ink);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.filter-tab:hover { background: var(--cream); color: var(--accent-dark); }
+.filter-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.filter-tab.active:hover { background: var(--accent-dark); color: #fff; }
+
 /* ---------- Tables ---------- */
 table { width: 100%; border-collapse: collapse; }
 th, td { text-align: left; padding: 0.6rem 0.6rem; border-bottom: 1px solid var(--border); }
@@ -384,15 +413,46 @@ input:focus, select:focus { outline: none; border-color: var(--accent); box-shad
 label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 0.3rem; font-weight: 600; }
 
 /* ---------- Responsive ---------- */
+
+/* Wide admin tables scroll horizontally instead of overflowing / squishing. */
+@media (max-width: 760px) {
+  table { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
+  .admin-nav { gap: 0.15rem; }
+  .admin-nav a { padding: 0.35rem 0.55rem; font-size: 0.9rem; }
+  .stat-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .stat-value { font-size: 2rem; }
+}
+
 @media (max-width: 600px) {
-  .site-header { padding: 0.6rem 1rem; }
-  .site-header .brand { font-size: 1.25rem; }
-  .site-header nav a { padding: 0.35rem 0.5rem; font-size: 0.9rem; }
+  .site-header { padding: 0.55rem 0.9rem; gap: 0.5rem; }
+  .site-header .brand { font-size: 1.2rem; gap: 0.4rem; }
+  .site-header .brand img { height: 30px; width: 30px; }
+  .site-header nav { gap: 0.15rem; }
+  .site-header nav a { padding: 0.35rem 0.5rem; font-size: 0.88rem; }
   .container { padding: 1.25rem 1rem 2.5rem; }
   h1 { font-size: 1.8rem; }
-  .hero-title { font-size: 2rem; }
-  .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.9rem; }
+  h2 { font-size: 1.4rem; }
+  .hero { padding: 1.5rem 0.5rem 1rem; }
+  .hero-title { font-size: 1.95rem; }
+  .hero-sub { font-size: 1.02rem; }
+  .hero-banner { padding: 1.25rem 1rem; }
+  .grid { grid-template-columns: 1fr 1fr; gap: 0.9rem; }
   .story { grid-template-columns: 1fr; gap: 1.25rem; text-align: center; }
-  .story-art { max-width: 240px; margin: 0 auto; }
-  .link-cta { display: inline-block; margin: 0.75rem 0 0; }
+  .story-art { max-width: 220px; margin: 0 auto; }
+  .hero-cta { flex-direction: column; }
+  .link-cta { margin: 0.25rem 0 0; }
+  .btn-lg { width: 100%; text-align: center; }
+  .trust-row { padding: 0.85rem 0.25rem; border-radius: 14px; }
+  .trust-item { padding: 0.25rem 0.4rem; gap: 0.3rem; }
+  .trust-icon { font-size: 1.4rem; }
+  .trust-label { font-size: 0.82rem; }
+  .stat-grid { grid-template-columns: 1fr; }
+  .product-name { font-size: 1.05rem; }
+  .product-price { font-size: 1.2rem; }
+}
+
+/* Very small phones: give the primary button and its row room */
+@media (max-width: 380px) {
+  .site-header .brand { font-size: 1.05rem; }
+  .grid { grid-template-columns: 1fr; }
 }

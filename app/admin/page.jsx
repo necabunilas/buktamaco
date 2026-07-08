@@ -33,21 +33,21 @@ export default async function AdminDashboard() {
       </div>
 
       <div className="stat-grid">
-        <a className="stat-card amber" href="/admin/orders">
+        <a className="stat-card amber" href="/admin/orders?status=PENDING">
           <span className="stat-value">{Number(pending.c)}</span>
           <span className="stat-label">Pending orders</span>
           <span className="stat-sub">Awaiting confirmation</span>
         </a>
-        <a className="stat-card blue" href="/admin/orders">
+        <a className="stat-card blue" href="/admin/orders?status=CONFIRMED">
           <span className="stat-value">{Number(confirmed.c)}</span>
           <span className="stat-label">Confirmed</span>
           <span className="stat-sub">Awaiting cash payment</span>
         </a>
-        <div className="stat-card green">
+        <a className="stat-card green" href="/admin/orders?status=PAID">
           <span className="stat-value">{Number(paidToday.c)}</span>
           <span className="stat-label">Paid today</span>
           <span className="stat-sub">₱{paidTotal.toFixed(2)} collected</span>
-        </div>
+        </a>
       </div>
 
       <div className="card" style={{ marginTop: '1.5rem' }}>

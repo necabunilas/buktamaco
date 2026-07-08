@@ -10,21 +10,30 @@ export default function HomePage() {
       </section>
 
       <section className="hero">
-        <h1 className="hero-title">Fresh carabao milk, straight from Malaybalay.</h1>
-        <p>
+        <h1 className="hero-title">Fresh carabao milk,<br />straight from Malaybalay.</h1>
+        <p className="hero-sub">
           Rich, creamy carabao milk — plain and flavored — crafted by the Bukidnon
           Tagoloanon tribe. Order online and pay cash on pickup.
         </p>
-        <p>
+        <div className="hero-cta">
           <a className="btn btn-gold btn-lg" href="/order/new">Place an order</a>
           <a className="link-cta" href="/products">or browse products →</a>
-        </p>
+        </div>
       </section>
 
       <section className="trust-row">
-        <span>🥛 Fresh daily</span>
-        <span>🌾 Locally sourced</span>
-        <span>💵 Cash on pickup</span>
+        <div className="trust-item">
+          <span className="trust-icon">🥛</span>
+          <span className="trust-label">Fresh daily</span>
+        </div>
+        <div className="trust-item">
+          <span className="trust-icon">🌾</span>
+          <span className="trust-label">Locally sourced</span>
+        </div>
+        <div className="trust-item">
+          <span className="trust-icon">💵</span>
+          <span className="trust-label">Cash on pickup</span>
+        </div>
       </section>
 
       <section className="story">
