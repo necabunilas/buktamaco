@@ -5,6 +5,7 @@ import { eq, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { STAFF_PASSWORD, signInStaff, signOutStaff, isStaff } from '@/lib/auth';
+import { sendSms } from '@/lib/sms';
 
 export async function login(formData) {
   const password = (formData.get('password') || '').toString();
@@ -28,6 +29,15 @@ export async function confirmOrder(formData) {
   await requireStaff();
   const orderId = Number(formData.get('orderId'));
   await db.update(orders).set({ status: 'CONFIRMED' }).where(eq(orders.id, orderId)).run();
+
+  const order = await db.select().from(orders).where(eq(orders.id, orderId)).get();
+  if (order) {
+    await sendSms(
+      order.customerContact,
+      `BukTamaCo: Your order #${orderId} is confirmed. Total PHP ${order.total.toFixed(2)}. We will prepare your order and deliver — please pay cash. Salamat!`
+    );
+  }
+
   revalidatePath(`/admin/orders/${orderId}`);
   revalidatePath('/admin/orders');
 }
@@ -91,6 +101,12 @@ export async function markPaid(formData) {
     const receiptNo = `BTC-${String(Number(count.c) + 1).padStart(6, '0')}`;
     await tx.insert(receipts).values({ orderId, receiptNo }).run();
   });
+
+  const receipt = await db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
+  await sendSms(
+    order.customerContact,
+    `BukTamaCo: Payment received for order #${orderId}. Receipt ${receipt?.receiptNo || ''}. Change PHP ${(cashReceived - order.total).toFixed(2)}. Salamat sa pagpalit!`
+  );
 
   revalidatePath(`/admin/orders/${orderId}`);
   revalidatePath('/admin/orders');

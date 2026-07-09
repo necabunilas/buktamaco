@@ -3,6 +3,7 @@
 import { db, products, orders, orderItems } from '@/lib/db';
 import { inArray } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
+import { sendSms } from '@/lib/sms';
 
 // Creates a PENDING order from the customer's cart.
 // Each product's quantity is submitted as its own field: qty_<productId>
@@ -45,6 +46,11 @@ export async function createOrder(formData) {
   for (const l of lines) {
     await db.insert(orderItems).values({ orderId, ...l }).run();
   }
+
+  await sendSms(
+    customerContact,
+    `BukTamaCo: Hi ${customerName}, we received your order #${orderId} (PHP ${total.toFixed(2)}). We'll confirm it shortly. Salamat!`
+  );
 
   redirect(`/order/${orderId}`);
 }
