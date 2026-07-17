@@ -55,6 +55,11 @@ html, body {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Sticky footer: footer stays at the bottom even on short pages. */
+body { display: flex; flex-direction: column; min-height: 100vh; }
+.container { flex: 1 0 auto; }
+.site-footer { flex-shrink: 0; }
+
 a { color: var(--accent); text-decoration: none; }
 a:hover { color: var(--accent-dark); }
 
@@ -106,12 +111,48 @@ h2 { font-size: 1.6rem; margin-top: 0; }
 
 /* ---------- Footer ---------- */
 .site-footer {
-  border-top: 1px solid var(--border);
+  border-top: 4px solid var(--gold);
   background: var(--accent);
-  padding: 2rem 1.5rem;
+  padding: 2.25rem 1.5rem 1.5rem;
   color: var(--cream);
-  text-align: center;
   font-size: 0.9rem;
+}
+.footer-inner {
+  max-width: 1040px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+.footer-brand { display: flex; align-items: center; gap: 0.85rem; }
+.footer-brand img { height: 46px; width: 46px; border-radius: 50%; object-fit: cover; flex-shrink: 0; }
+.footer-name { font-family: var(--font-display); font-size: 1.35rem; letter-spacing: 1px; display: block; }
+.footer-brand p { margin: 0.15rem 0 0; color: rgba(243, 231, 211, 0.8); max-width: 320px; font-size: 0.85rem; }
+.footer-links { display: flex; gap: 1.25rem; }
+.footer-links a { color: var(--cream); font-weight: 600; }
+.footer-links a:hover { color: #fff; }
+.footer-social { display: flex; gap: 0.6rem; }
+.footer-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(243, 231, 211, 0.14);
+  color: var(--cream);
+}
+.footer-social a:hover { background: var(--gold); color: var(--accent-dark); }
+.footer-bottom {
+  max-width: 1040px;
+  margin: 1.5rem auto 0;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(243, 231, 211, 0.2);
+  text-align: center;
+  color: rgba(243, 231, 211, 0.75);
+  font-size: 0.82rem;
 }
 
 /* ---------- Hero ---------- */
@@ -449,6 +490,9 @@ label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 
   .stat-grid { grid-template-columns: 1fr; }
   .product-name { font-size: 1.05rem; }
   .product-price { font-size: 1.2rem; }
+  .footer-inner { flex-direction: column; text-align: center; gap: 1.25rem; }
+  .footer-brand { flex-direction: column; text-align: center; }
+  .footer-brand p { max-width: none; }
 }
 
 /* Very small phones: give the primary button and its row room */
