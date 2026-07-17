@@ -3,6 +3,7 @@ import { eq } from 'drizzle-orm';
 import { isStaff } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
 import { confirmOrder, cancelOrder, markPaid } from '../../actions';
+import { formatPHDateTime } from '@/lib/format';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,21 +32,32 @@ export default async function AdminOrderDetail({ params, searchParams }) {
 
   const receipt = await db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
   const open = order.status === 'PENDING' || order.status === 'CONFIRMED';
+  const itemCount = items.reduce((n, it) => n + it.qty, 0);
 
   return (
     <div>
-      <p><a href="/admin/orders">← All orders</a></p>
-      <h1>Order #{order.id}</h1>
-      <p>
+      <p style={{ margin: '0 0 0.5rem' }}><a href="/admin/orders">← All orders</a></p>
+      <div className="page-head">
+        <h1 style={{ margin: 0 }}>Order #{order.id}</h1>
         <span className={`badge status-${order.status}`}>{order.status}</span>
-      </p>
+      </div>
 
       <div className="card">
-        <p style={{ margin: '0 0 0.25rem' }}><strong>{order.customerName}</strong></p>
-        {order.customerContact && <p style={{ margin: 0, color: 'var(--muted)' }}>{order.customerContact}</p>}
-        {order.note && <p style={{ margin: '0.5rem 0', color: 'var(--muted)' }}>Note: {order.note}</p>}
+        <div className="order-head">
+          <div>
+            <p className="order-customer">{order.customerName}</p>
+            {order.customerContact && (
+              <a className="order-contact" href={`tel:${order.customerContact}`}>📞 {order.customerContact}</a>
+            )}
+          </div>
+          <div className="order-meta">
+            <span>Placed {formatPHDateTime(order.createdAt)}</span>
+            {order.paidAt && <span>Paid {formatPHDateTime(order.paidAt)}</span>}
+          </div>
+        </div>
+        {order.note && <p className="order-note">Note: {order.note}</p>}
 
-        <table style={{ marginTop: '0.75rem' }}>
+        <table style={{ marginTop: '1rem' }}>
           <thead>
             <tr><th>Item</th><th>Qty</th><th style={{ textAlign: 'right' }}>Price</th><th style={{ textAlign: 'right' }}>Subtotal</th></tr>
           </thead>
@@ -61,52 +73,73 @@ export default async function AdminOrderDetail({ params, searchParams }) {
           </tbody>
           <tfoot>
             <tr>
-              <td colSpan={3} style={{ textAlign: 'right', fontWeight: 600 }}>Total</td>
-              <td style={{ textAlign: 'right', fontWeight: 600 }}>₱{order.total.toFixed(2)}</td>
+              <td colSpan={3} style={{ textAlign: 'right', fontWeight: 700 }}>Total ({itemCount} item{itemCount !== 1 ? 's' : ''})</td>
+              <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--accent-dark)' }}>₱{order.total.toFixed(2)}</td>
             </tr>
           </tfoot>
         </table>
       </div>
 
       {order.status === 'PAID' && (
-        <div className="card" style={{ marginTop: '1rem' }}>
-          <p style={{ margin: 0 }}>Cash received: ₱{(order.cashReceived ?? 0).toFixed(2)}</p>
-          <p style={{ margin: '0.25rem 0' }}>Change: ₱{(order.changeDue ?? 0).toFixed(2)}</p>
+        <div className="card paid-card" style={{ marginTop: '1rem' }}>
+          <div className="paid-figures">
+            <div><span>Cash received</span><strong>₱{(order.cashReceived ?? 0).toFixed(2)}</strong></div>
+            <div><span>Change given</span><strong>₱{(order.changeDue ?? 0).toFixed(2)}</strong></div>
+          </div>
           {receipt && (
-            <p style={{ marginBottom: 0 }}>
-              <a className="btn" href={`/order/${order.id}/receipt`}>View / print receipt ({receipt.receiptNo})</a>
-            </p>
+            <a className="btn" href={`/order/${order.id}/receipt`}>View / print receipt ({receipt.receiptNo})</a>
           )}
         </div>
       )}
 
       {open && (
         <div className="card" style={{ marginTop: '1rem' }}>
-          <h3 style={{ marginTop: 0 }}>Actions</h3>
-
           {order.status === 'PENDING' && (
-            <form action={confirmOrder} style={{ display: 'inline' }}>
-              <input type="hidden" name="orderId" value={order.id} />
-              <button className="btn" type="submit">Confirm order</button>
-            </form>
+            <div className="action-step">
+              <div>
+                <strong>Step 1 — Confirm the order</strong>
+                <p style={{ margin: '0.15rem 0 0', color: 'var(--muted)', fontSize: '0.9rem' }}>
+                  Let the customer know it's ready for pickup.
+                </p>
+              </div>
+              <form action={confirmOrder}>
+                <input type="hidden" name="orderId" value={order.id} />
+                <button className="btn" type="submit">Confirm order</button>
+              </form>
+            </div>
           )}
 
-          <form action={markPaid} style={{ marginTop: '1rem' }}>
-            <input type="hidden" name="orderId" value={order.id} />
-            <label htmlFor="cashReceived">Cash received (total ₱{order.total.toFixed(2)})</label>
-            <input id="cashReceived" name="cashReceived" type="number" step="0.01" min={order.total} style={{ width: '160px' }} />
-            {sp?.error === 'cash' && (
-              <p style={{ color: 'var(--warn)' }}>Cash received must be at least the order total.</p>
-            )}
-            <div style={{ marginTop: '0.5rem' }}>
-              <button className="btn" type="submit">Take cash &amp; mark paid</button>
-            </div>
-          </form>
+          <div className="action-step" style={{ borderTop: order.status === 'PENDING' ? '1px solid var(--border)' : 'none', marginTop: order.status === 'PENDING' ? '1.25rem' : 0, paddingTop: order.status === 'PENDING' ? '1.25rem' : 0 }}>
+            <form action={markPaid} style={{ width: '100%' }}>
+              <input type="hidden" name="orderId" value={order.id} />
+              <strong>{order.status === 'PENDING' ? 'Step 2 — ' : ''}Take cash payment</strong>
+              <p style={{ margin: '0.15rem 0 0.6rem', color: 'var(--muted)', fontSize: '0.9rem' }}>
+                Amount due: <strong style={{ color: 'var(--accent-dark)' }}>₱{order.total.toFixed(2)}</strong>
+              </p>
+              <div className="cash-row">
+                <input
+                  id="cashReceived"
+                  name="cashReceived"
+                  type="number"
+                  step="0.01"
+                  min={order.total}
+                  placeholder="Cash received"
+                  style={{ width: '160px' }}
+                />
+                <button className="btn btn-gold" type="submit">Mark as paid</button>
+              </div>
+              {sp?.error === 'cash' && (
+                <p style={{ color: 'var(--warn)', margin: '0.5rem 0 0' }}>Cash received must be at least the amount due.</p>
+              )}
+            </form>
+          </div>
 
-          <form action={cancelOrder} style={{ marginTop: '1rem' }}>
-            <input type="hidden" name="orderId" value={order.id} />
-            <button className="btn secondary" type="submit">Cancel order</button>
-          </form>
+          <div style={{ borderTop: '1px solid var(--border)', marginTop: '1rem', paddingTop: '1rem' }}>
+            <form action={cancelOrder}>
+              <input type="hidden" name="orderId" value={order.id} />
+              <button className="btn danger" type="submit">Cancel this order</button>
+            </form>
+          </div>
         </div>
       )}
     </div>
