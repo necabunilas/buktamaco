@@ -31,12 +31,6 @@ export default function RootLayout({ children }) {
               </div>
             </div>
 
-            <div className="footer-links">
-              <a href="/products">Products</a>
-              <a href="/order/new">Order</a>
-              <a href="/admin">Staff</a>
-            </div>
-
             <div className="footer-social" aria-label="Social media">
               <a href="https://www.facebook.com/profile.php?id=61590406680358" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
