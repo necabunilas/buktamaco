@@ -157,15 +157,27 @@ export async function updateProduct(formData) {
 export async function restock(formData) {
   await requireStaff();
   const productId = Number(formData.get('productId'));
+  const op = (formData.get('op') || 'add').toString(); // 'add' | 'remove'
   const amount = parseInt(formData.get('amount'), 10);
-  if (isNaN(amount) || amount === 0) return;
+  if (isNaN(amount) || amount <= 0) return;
+
+  const inv = await db.select().from(inventory).where(eq(inventory.productId, productId)).get();
+  if (!inv) return;
+
+  let change = op === 'remove' ? -amount : amount;
+  // Never let stock go below zero.
+  if (inv.qtyOnHand + change < 0) change = -inv.qtyOnHand;
+  if (change === 0) {
+    revalidatePath('/admin/inventory');
+    return;
+  }
 
   await db.update(inventory)
-    .set({ qtyOnHand: sql`${inventory.qtyOnHand} + ${amount}`, updatedAt: sql`(datetime('now'))` })
+    .set({ qtyOnHand: sql`${inventory.qtyOnHand} + ${change}`, updatedAt: sql`(datetime('now'))` })
     .where(eq(inventory.productId, productId))
     .run();
   await db.insert(inventoryMovements)
-    .values({ productId, change: amount, reason: amount > 0 ? 'restock' : 'adjustment' })
+    .values({ productId, change, reason: change > 0 ? 'restock' : 'adjustment' })
     .run();
   revalidatePath('/admin/inventory');
 }

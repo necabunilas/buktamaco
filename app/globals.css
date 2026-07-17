@@ -400,6 +400,24 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   font-weight: 600;
 }
 
+/* ---------- Inventory adjust ---------- */
+.stock-adjust { display: flex; gap: 0.4rem; align-items: center; }
+.stock-amount { width: 68px; text-align: center; }
+.stock-btn {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.7rem;
+  font-weight: 700;
+  font-family: inherit;
+  font-size: 0.9rem;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.stock-btn.add { background: #e7f4e8; color: var(--ok); border-color: #bfe3c1; }
+.stock-btn.add:hover { background: #d6ecd8; }
+.stock-btn.remove { background: #fbe6e6; color: var(--warn); border-color: #f2c4c4; }
+.stock-btn.remove:hover { background: #f6d6d6; }
+
 /* ---------- Filter tabs ---------- */
 .filter-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .filter-tab {

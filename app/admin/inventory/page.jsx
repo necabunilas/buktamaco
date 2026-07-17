@@ -42,16 +42,18 @@ export default async function AdminInventory() {
               <td className={r.qty <= r.reorder ? 'low-stock' : ''}>{r.qty}</td>
               <td>{r.reorder}</td>
               <td>
-                <form action={restock} style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+                <form action={restock} className="stock-adjust">
                   <input type="hidden" name="productId" value={r.productId} />
                   <input
                     name="amount"
                     type="number"
-                    defaultValue={12}
-                    style={{ width: '90px' }}
-                    aria-label="Adjust amount (negative to remove)"
+                    min="1"
+                    defaultValue={1}
+                    className="stock-amount"
+                    aria-label="Amount to add or remove"
                   />
-                  <button className="btn secondary" type="submit">Apply</button>
+                  <button className="stock-btn add" name="op" value="add" type="submit" title="Add stock">＋ Add</button>
+                  <button className="stock-btn remove" name="op" value="remove" type="submit" title="Remove stock">－ Remove</button>
                 </form>
               </td>
             </tr>
@@ -59,7 +61,7 @@ export default async function AdminInventory() {
         </tbody>
       </table>
       <p style={{ color: 'var(--muted)', marginTop: '0.75rem' }}>
-        Enter a positive number to restock, or a negative number to remove stock. Every change is logged.
+        Enter an amount, then tap <strong>Add</strong> to restock or <strong>Remove</strong> to take stock out. Every change is logged and stock never goes below zero.
       </p>
     </div>
   );
