@@ -40,7 +40,7 @@ export default async function AdminProducts({ searchParams }) {
       {sp?.error && <p style={{ color: 'var(--warn)' }}>{ERROR_MSG[sp.error] || 'Something went wrong.'}</p>}
       {sp?.ok && <p style={{ color: 'var(--ok)' }}>{OK_MSG[sp.ok] || 'Saved.'}</p>}
 
-      <table>
+      <table className="responsive-table">
         <thead>
           <tr>
             <th>Product</th>
@@ -56,12 +56,12 @@ export default async function AdminProducts({ searchParams }) {
         <tbody>
           {rows.map((p) => (
             <tr key={p.id}>
-              <td>{p.name}</td>
-              <td style={{ color: 'var(--muted)' }}>{p.sku}</td>
-              <td>{p.flavor || 'Plain'}</td>
-              <td>{p.unit}</td>
-              <td>{p.qty ?? 0}</td>
-              <td colSpan={3}>
+              <td data-label="Product">{p.name}</td>
+              <td data-label="SKU" style={{ color: 'var(--muted)' }}>{p.sku}</td>
+              <td data-label="Flavor">{p.flavor || 'Plain'}</td>
+              <td data-label="Size">{p.unit}</td>
+              <td data-label="Stock">{p.qty ?? 0}</td>
+              <td data-label="Update" colSpan={3}>
                 <form action={updateProduct} style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
                   <input type="hidden" name="productId" value={p.id} />
                   <span>₱</span>

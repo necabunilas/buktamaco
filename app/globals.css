@@ -430,6 +430,17 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
 .order-contact { display: inline-block; font-weight: 600; }
 .order-meta { display: flex; flex-direction: column; gap: 0.15rem; text-align: right; color: var(--muted); font-size: 0.85rem; }
 .order-note { margin: 0.75rem 0 0; padding: 0.5rem 0.75rem; background: var(--bg); border-radius: 8px; color: var(--ink); }
+.order-total {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 2px solid var(--border);
+  font-weight: 700;
+}
+.order-total strong { font-size: 1.2rem; color: var(--accent-dark); }
 
 .action-step { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
 .cash-row { display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap; }
@@ -460,6 +471,40 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
 
 /* ---------- Tables ---------- */
 table { width: 100%; border-collapse: collapse; }
+
+/* On mobile, .responsive-table rows become stacked label/value cards. */
+@media (max-width: 640px) {
+  .responsive-table thead { display: none; }
+  .responsive-table, .responsive-table tbody, .responsive-table tr, .responsive-table td { display: block; width: 100%; }
+  .responsive-table tr {
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: var(--shadow);
+    padding: 0.35rem 0.9rem;
+    margin-bottom: 0.85rem;
+  }
+  .responsive-table td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0.5rem 0;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    text-align: right;
+  }
+  .responsive-table tr td:last-child { border-bottom: none; }
+  .responsive-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: var(--muted);
+    text-align: left;
+    font-size: 0.85rem;
+  }
+  .responsive-table td:empty { display: none; }
+}
 th, td { text-align: left; padding: 0.6rem 0.6rem; border-bottom: 1px solid var(--border); }
 th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); font-weight: 700; }
 

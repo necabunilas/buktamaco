@@ -1,5 +1,13 @@
 .receipt-wrap { max-width: 360px; margin: 1rem auto; }
 
+.receipt-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
 .receipt {
   background: #fff;
   border: 1px solid var(--border);

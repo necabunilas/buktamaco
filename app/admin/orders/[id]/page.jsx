@@ -57,27 +57,25 @@ export default async function AdminOrderDetail({ params, searchParams }) {
         </div>
         {order.note && <p className="order-note">Note: {order.note}</p>}
 
-        <table style={{ marginTop: '1rem' }}>
+        <table className="responsive-table" style={{ marginTop: '1rem' }}>
           <thead>
             <tr><th>Item</th><th>Qty</th><th style={{ textAlign: 'right' }}>Price</th><th style={{ textAlign: 'right' }}>Subtotal</th></tr>
           </thead>
           <tbody>
             {items.map((it, i) => (
               <tr key={i}>
-                <td>{it.name} {it.flavor ? `(${it.flavor})` : ''}</td>
-                <td>{it.qty}</td>
-                <td style={{ textAlign: 'right' }}>₱{it.unitPrice.toFixed(2)}</td>
-                <td style={{ textAlign: 'right' }}>₱{(it.unitPrice * it.qty).toFixed(2)}</td>
+                <td data-label="Item">{it.name} {it.flavor ? `(${it.flavor})` : ''}</td>
+                <td data-label="Qty">{it.qty}</td>
+                <td data-label="Price" style={{ textAlign: 'right' }}>₱{it.unitPrice.toFixed(2)}</td>
+                <td data-label="Subtotal" style={{ textAlign: 'right' }}>₱{(it.unitPrice * it.qty).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan={3} style={{ textAlign: 'right', fontWeight: 700 }}>Total ({itemCount} item{itemCount !== 1 ? 's' : ''})</td>
-              <td style={{ textAlign: 'right', fontWeight: 700, color: 'var(--accent-dark)' }}>₱{order.total.toFixed(2)}</td>
-            </tr>
-          </tfoot>
         </table>
+        <div className="order-total">
+          <span>Total ({itemCount} item{itemCount !== 1 ? 's' : ''})</span>
+          <strong>₱{order.total.toFixed(2)}</strong>
+        </div>
       </div>
 
       {order.status === 'PAID' && (

@@ -49,7 +49,7 @@ export default async function AdminOrders({ searchParams }) {
           {active ? `No ${active.toLowerCase()} orders.` : 'No orders yet.'}
         </p>
       ) : (
-        <table style={{ marginTop: '1rem' }}>
+        <table className="responsive-table" style={{ marginTop: '1rem' }}>
           <thead>
             <tr>
               <th>#</th>
@@ -63,12 +63,12 @@ export default async function AdminOrders({ searchParams }) {
           <tbody>
             {rows.map((o) => (
               <tr key={o.id}>
-                <td>{o.id}</td>
-                <td>{o.customerName}</td>
-                <td><span className={`badge status-${o.status}`}>{o.status}</span></td>
-                <td style={{ textAlign: 'right' }}>₱{o.total.toFixed(2)}</td>
-                <td style={{ color: 'var(--muted)' }}>{formatPHDateTime(o.createdAt)}</td>
-                <td><a href={`/admin/orders/${o.id}`}>Open</a></td>
+                <td data-label="Order">#{o.id}</td>
+                <td data-label="Customer">{o.customerName}</td>
+                <td data-label="Status"><span className={`badge status-${o.status}`}>{o.status}</span></td>
+                <td data-label="Total" style={{ textAlign: 'right' }}>₱{o.total.toFixed(2)}</td>
+                <td data-label="Placed" style={{ color: 'var(--muted)' }}>{formatPHDateTime(o.createdAt)}</td>
+                <td data-label=""><a href={`/admin/orders/${o.id}`}>Open →</a></td>
               </tr>
             ))}
           </tbody>

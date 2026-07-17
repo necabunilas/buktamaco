@@ -24,7 +24,7 @@ export default async function AdminInventory() {
   return (
     <div>
       <h1>Inventory</h1>
-      <table>
+      <table className="responsive-table">
         <thead>
           <tr>
             <th>Product</th>
@@ -36,12 +36,12 @@ export default async function AdminInventory() {
         <tbody>
           {rows.map((r) => (
             <tr key={r.productId}>
-              <td>
+              <td data-label="Product">
                 {r.name} {r.flavor ? `(${r.flavor})` : ''}
               </td>
-              <td className={r.qty <= r.reorder ? 'low-stock' : ''}>{r.qty}</td>
-              <td>{r.reorder}</td>
-              <td>
+              <td data-label="On hand" className={r.qty <= r.reorder ? 'low-stock' : ''}>{r.qty}</td>
+              <td data-label="Reorder at">{r.reorder}</td>
+              <td data-label="Adjust">
                 <form action={restock} className="stock-adjust">
                   <input type="hidden" name="productId" value={r.productId} />
                   <input

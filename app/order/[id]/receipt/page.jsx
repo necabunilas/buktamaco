@@ -33,7 +33,7 @@ export default async function ReceiptPage({ params }) {
 
   return (
     <div className="receipt-wrap">
-      <PrintButton />
+      <PrintButton orderId={order.id} />
       <div className="receipt">
         <div className="receipt-head">
           <h2>BukTamaCo</h2>
