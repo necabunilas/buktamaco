@@ -47,10 +47,19 @@ export async function createOrder(formData) {
     await db.insert(orderItems).values({ orderId, ...l }).run();
   }
 
+  // Notify the customer that we received the order.
   await sendSms(
     customerContact,
     `BukTamaCo: Hi ${customerName}, we received your order #${orderId} (PHP ${total.toFixed(2)}). We'll confirm it shortly. Salamat!`
   );
+
+  // Notify staff of the new order (only on placement).
+  if (process.env.STAFF_PHONE) {
+    await sendSms(
+      process.env.STAFF_PHONE,
+      `New BukTamaCo order #${orderId} from ${customerName} (${customerContact}) — PHP ${total.toFixed(2)}. Open the admin to confirm.`
+    );
+  }
 
   redirect(`/order/${orderId}`);
 }
