@@ -455,6 +455,16 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
 .paid-figures span { color: var(--muted); font-size: 0.85rem; }
 .paid-figures strong { font-size: 1.3rem; color: var(--accent-dark); }
 
+/* ---------- Date range ---------- */
+.date-range {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  padding: 1rem 1.25rem;
+}
+.date-range label { margin-bottom: 0.25rem; }
+
 /* ---------- Filter tabs ---------- */
 .filter-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .filter-tab {

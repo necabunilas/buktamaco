@@ -19,6 +19,7 @@ export default async function AdminLayout({ children }) {
           <nav className="admin-nav">
             <a href="/admin">Dashboard</a>
             <a href="/admin/orders">Orders</a>
+            <a href="/admin/sales">Sales</a>
             <a href="/admin/inventory">Inventory</a>
             <a href="/admin/products">Products</a>
           </nav>
