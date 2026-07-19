@@ -225,10 +225,18 @@ h2 { font-size: 1.6rem; margin-top: 0; }
   padding: 1.5rem;
   box-shadow: var(--shadow);
 }
-.story-art { border-radius: 16px; overflow: hidden; background: #cc0001; }
+.story-art { border-radius: 16px; overflow: hidden; aspect-ratio: 4 / 3; box-shadow: var(--shadow); }
 .story-art img { width: 100%; height: 100%; object-fit: cover; display: block; }
 .story-text h2 { color: var(--accent-dark); margin-bottom: 0.6rem; }
 .story-text p { color: var(--ink); font-size: 1.05rem; margin: 0 0 1rem; }
+
+.section-title {
+  font-family: var(--font-display);
+  color: var(--ink);
+  text-align: center;
+  font-size: 2.2rem;
+  line-height: 1.1;
+}
 
 .feature h3 { margin: 0 0 0.4rem; color: var(--accent-dark); }
 .feature p { color: var(--muted); margin: 0; }

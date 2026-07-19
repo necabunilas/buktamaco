@@ -38,7 +38,7 @@ export default function HomePage() {
 
       <section className="story">
         <div className="story-art">
-          <img src="/logo.jpeg" alt="BukTamaCo carabao" />
+          <img src="/tribe.jpg" alt="The Bukidnon Tagoloanon tribe of Malaybalay City" />
         </div>
         <div className="story-text">
           <h2>From the hands of the Bukidnon Tagoloanon tribe</h2>
@@ -55,7 +55,7 @@ export default function HomePage() {
       </section>
 
       <section style={{ marginTop: '2.5rem' }}>
-        <h2 style={{ textAlign: 'center' }}>Why BukTamaCo</h2>
+        <h2 className="section-title">Why BukTamaCo</h2>
         <div className="grid" style={{ marginTop: '1.25rem' }}>
           <div className="card feature">
             <h3>100% Carabao Milk</h3>
