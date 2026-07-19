@@ -70,6 +70,14 @@ export default async function ReceiptPage({ params }) {
         </div>
 
         <p className="receipt-foot">Thank you for your purchase!</p>
+
+        <div className="receipt-info">
+          <p>BukTamaCo Dairy Farm</p>
+          <p>Malaybalay City, Bukidnon</p>
+          <p>facebook.com/buktamaco</p>
+          <p>IG @buktamacodairy</p>
+        </div>
+        <p className="receipt-pos">Powered by nicolausmagnus</p>
       </div>
     </div>
   );

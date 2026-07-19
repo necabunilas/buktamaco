@@ -44,7 +44,10 @@ export default function RootLayout({ children }) {
               </a>
             </div>
           </div>
-          <div className="footer-bottom">© 2026 BukTamaCo. All rights reserved.</div>
+          <div className="footer-bottom">
+            © 2026 BukTamaCo. All rights reserved.
+            <span className="footer-pos">Powered by nicolausmagnus</span>
+          </div>
         </footer>
       </body>
     </html>

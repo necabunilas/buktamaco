@@ -154,6 +154,7 @@ h2 { font-size: 1.6rem; margin-top: 0; }
   color: rgba(243, 231, 211, 0.75);
   font-size: 0.82rem;
 }
+.footer-pos { display: block; margin-top: 0.3rem; color: rgba(243, 231, 211, 0.55); }
 
 /* ---------- Hero ---------- */
 .hero-banner {
