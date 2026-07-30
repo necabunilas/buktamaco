@@ -50,17 +50,16 @@ export async function createOrder(formData) {
   // Notify the customer that we received the order.
   await sendSms(
     customerContact,
-    `BukTamaCo: Hi ${customerName}, we received your order #${orderId} (PHP ${total.toFixed(2)}). We'll confirm it shortly. Salamat!`
+    `Hi ${customerName}, we received your order #${orderId} (PHP ${total.toFixed(2)}). We'll confirm it shortly. Salamat!`
   );
 
-  // Staff notification disabled for now to save on SMS cost. To re-enable,
-  // uncomment and set STAFF_PHONE.
-  // if (process.env.STAFF_PHONE) {
-  //   await sendSms(
-  //     process.env.STAFF_PHONE,
-  //     `New BukTamaCo order #${orderId} from ${customerName} (${customerContact}) — PHP ${total.toFixed(2)}. Open the admin to confirm.`
-  //   );
-  // }
+  // Notify staff of the new order (only on placement).
+  if (process.env.STAFF_PHONE) {
+    await sendSms(
+      process.env.STAFF_PHONE,
+      `New order #${orderId} from ${customerName} (${customerContact}) — PHP ${total.toFixed(2)}. Open the admin to confirm.`
+    );
+  }
 
   redirect(`/order/${orderId}`);
 }
