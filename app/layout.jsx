@@ -28,6 +28,7 @@ export default function RootLayout({ children }) {
           <nav>
             <a href="/products">Products</a>
             <a href="/order/new">Order</a>
+            <a href="/account">Account</a>
             <a href="/admin">Staff</a>
           </nav>
         </header>

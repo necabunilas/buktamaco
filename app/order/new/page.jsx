@@ -1,10 +1,15 @@
 import { db, products, inventory } from '@/lib/db';
 import { eq } from 'drizzle-orm';
+import { redirect } from 'next/navigation';
+import { getCustomer } from '@/lib/customer-auth';
 import OrderForm from './OrderForm';
 
 export const dynamic = 'force-dynamic';
 
 export default async function NewOrderPage() {
+  const customer = await getCustomer();
+  if (!customer) redirect('/account/login?next=order');
+
   const rows = await db
     .select({
       id: products.id,
@@ -30,7 +35,7 @@ export default async function NewOrderPage() {
       {available.length === 0 ? (
         <p>Sorry, everything is out of stock right now.</p>
       ) : (
-        <OrderForm products={available} />
+        <OrderForm products={available} customer={customer} />
       )}
     </div>
   );

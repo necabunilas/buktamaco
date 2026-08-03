@@ -1,4 +1,4 @@
-import { db, orders, orderItems, products, receipts } from '@/lib/db';
+import { db, orders, orderItems, products, receipts, customers } from '@/lib/db';
 import { eq } from 'drizzle-orm';
 import { isStaff } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
@@ -31,8 +31,14 @@ export default async function AdminOrderDetail({ params, searchParams }) {
     .all();
 
   const receipt = await db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
+  const customer = order.customerId
+    ? await db.select().from(customers).where(eq(customers.id, order.customerId)).get()
+    : null;
   const open = order.status === 'PENDING' || order.status === 'CONFIRMED';
   const itemCount = items.reduce((n, it) => n + it.qty, 0);
+  const mapsUrl = order.address
+    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.address)}`
+    : null;
 
   return (
     <div>
@@ -45,7 +51,10 @@ export default async function AdminOrderDetail({ params, searchParams }) {
       <div className="card">
         <div className="order-head">
           <div>
-            <p className="order-customer">{order.customerName}</p>
+            <p className="order-customer">
+              {order.customerName}
+              {customer?.isVip && <span className="vip-badge">VIP</span>}
+            </p>
             {order.customerContact && (
               <a className="order-contact" href={`tel:${order.customerContact}`}>📞 {order.customerContact}</a>
             )}
@@ -55,6 +64,16 @@ export default async function AdminOrderDetail({ params, searchParams }) {
             {order.paidAt && <span>Paid {formatPHDateTime(order.paidAt)}</span>}
           </div>
         </div>
+        {order.address && (
+          <p className="order-note">
+            📍 {order.address}{' '}
+            {mapsUrl && (
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700 }}>
+                Open in Maps →
+              </a>
+            )}
+          </p>
+        )}
         {order.note && <p className="order-note">Note: {order.note}</p>}
 
         <table className="responsive-table" style={{ marginTop: '1rem' }}>

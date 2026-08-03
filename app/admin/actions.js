@@ -1,6 +1,6 @@
 'use server';
 
-import { db, products, orders, orderItems, inventory, inventoryMovements, receipts } from '@/lib/db';
+import { db, products, orders, orderItems, inventory, inventoryMovements, receipts, customers } from '@/lib/db';
 import { eq, sql } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
@@ -152,6 +152,14 @@ export async function updateProduct(formData) {
   revalidatePath('/admin/products');
   revalidatePath('/products');
   redirect('/admin/products?ok=updated');
+}
+
+export async function toggleVip(formData) {
+  await requireStaff();
+  const customerId = Number(formData.get('customerId'));
+  const makeVip = formData.get('makeVip') === '1';
+  await db.update(customers).set({ isVip: makeVip }).where(eq(customers.id, customerId)).run();
+  revalidatePath('/admin/customers');
 }
 
 export async function restock(formData) {

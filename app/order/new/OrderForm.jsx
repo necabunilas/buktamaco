@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import { createOrder } from '../actions';
 
-export default function OrderForm({ products }) {
+export default function OrderForm({ products, customer }) {
   const [qtys, setQtys] = useState({}); // { [productId]: qty }
 
   const cart = useMemo(
@@ -78,14 +78,13 @@ export default function OrderForm({ products }) {
       </div>
 
       <div className="card" style={{ marginTop: '1.5rem' }}>
-        <h3 style={{ marginTop: 0 }}>Your Details</h3>
+        <h3 style={{ marginTop: 0 }}>Delivery Details</h3>
+        <p style={{ margin: '0 0 0.75rem', color: 'var(--muted)' }}>
+          Ordering as <strong style={{ color: 'var(--ink)' }}>{customer.name}</strong> · {customer.contact}
+        </p>
         <div style={{ marginBottom: '0.75rem' }}>
-          <label htmlFor="customerName">Name *</label>
-          <input id="customerName" name="customerName" required style={{ width: '100%' }} />
-        </div>
-        <div style={{ marginBottom: '0.75rem' }}>
-          <label htmlFor="customerContact">Contact number *</label>
-          <input id="customerContact" name="customerContact" required style={{ width: '100%' }} />
+          <label htmlFor="address">Delivery address *</label>
+          <input id="address" name="address" required defaultValue={customer.address || ''} placeholder="House/street, barangay, city" style={{ width: '100%' }} />
         </div>
         <div style={{ marginBottom: '0.75rem' }}>
           <label htmlFor="note">Note (optional)</label>

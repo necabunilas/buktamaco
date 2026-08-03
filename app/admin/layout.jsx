@@ -32,6 +32,7 @@ export default async function AdminLayout({ children }) {
               {pendingCount > 0 && <span className="nav-badge">{pendingCount}</span>}
             </a>
             <a href="/admin/sales">Sales</a>
+            <a href="/admin/customers">Customers</a>
             <a href="/admin/inventory">Inventory</a>
             <a href="/admin/products">Products</a>
           </nav>

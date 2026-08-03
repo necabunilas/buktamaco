@@ -1,19 +1,23 @@
 'use server';
 
-import { db, products, orders, orderItems } from '@/lib/db';
-import { inArray } from 'drizzle-orm';
+import { db, products, orders, orderItems, customers } from '@/lib/db';
+import { inArray, eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { sendSms } from '@/lib/sms';
+import { getCustomer } from '@/lib/customer-auth';
 
-// Creates a PENDING order from the customer's cart.
+// Creates a PENDING order from the customer's cart. Requires a logged-in customer.
 // Each product's quantity is submitted as its own field: qty_<productId>
 export async function createOrder(formData) {
-  const customerName = (formData.get('customerName') || '').toString().trim();
-  const customerContact = (formData.get('customerContact') || '').toString().trim();
+  const customer = await getCustomer();
+  if (!customer) redirect('/account/login?next=order');
+
+  const customerName = customer.name;
+  const customerContact = customer.contact;
+  const address = (formData.get('address') || '').toString().trim() || customer.address || '';
   const note = (formData.get('note') || '').toString().trim();
 
-  if (!customerName) throw new Error('Customer name is required.');
-  if (!customerContact) throw new Error('Contact number is required.');
+  if (!address) throw new Error('Delivery address is required.');
 
   // Collect every qty_<productId> field with a positive quantity.
   const cart = [];
@@ -39,12 +43,25 @@ export async function createOrder(formData) {
 
   const result = await db
     .insert(orders)
-    .values({ customerName, customerContact, note, status: 'PENDING', total })
+    .values({
+      customerId: customer.id,
+      customerName,
+      customerContact,
+      address,
+      note,
+      status: 'PENDING',
+      total,
+    })
     .run();
   const orderId = Number(result.lastInsertRowid);
 
   for (const l of lines) {
     await db.insert(orderItems).values({ orderId, ...l }).run();
+  }
+
+  // Keep the customer's saved address up to date with their latest order.
+  if (address && address !== customer.address) {
+    await db.update(customers).set({ address }).where(eq(customers.id, customer.id)).run();
   }
 
   // Notify the customer that we received the order.

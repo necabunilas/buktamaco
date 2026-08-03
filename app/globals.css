@@ -466,6 +466,18 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   flex-wrap: wrap;
 }
 .order-customer { font-size: 1.15rem; font-weight: 700; margin: 0 0 0.2rem; }
+.vip-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  background: var(--gold);
+  color: #4a2f00;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  padding: 0.12rem 0.5rem;
+  border-radius: 999px;
+  vertical-align: middle;
+}
 .order-contact { display: inline-block; font-weight: 600; }
 .order-meta { display: flex; flex-direction: column; gap: 0.15rem; text-align: right; color: var(--muted); font-size: 0.85rem; }
 .order-note { margin: 0.75rem 0 0; padding: 0.5rem 0.75rem; background: var(--bg); border-radius: 8px; color: var(--ink); }
