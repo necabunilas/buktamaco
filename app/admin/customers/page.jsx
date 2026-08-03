@@ -17,6 +17,8 @@ export default async function AdminCustomers() {
       name: customers.name,
       contact: customers.contact,
       address: customers.address,
+      latitude: customers.latitude,
+      longitude: customers.longitude,
       isVip: customers.isVip,
       orderCount: sql`(SELECT count(*) FROM orders o WHERE o.customer_id = ${customers.id})`,
       totalSpent: sql`(SELECT coalesce(sum(total),0) FROM orders o WHERE o.customer_id = ${customers.id} AND o.status = 'PAID')`,
@@ -47,9 +49,12 @@ export default async function AdminCustomers() {
           </thead>
           <tbody>
             {rows.map((c) => {
-              const mapsUrl = c.address
-                ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}`
-                : null;
+              const mapsUrl =
+                c.latitude != null && c.longitude != null
+                  ? `https://www.google.com/maps/search/?api=1&query=${c.latitude},${c.longitude}`
+                  : c.address
+                    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(c.address)}`
+                    : null;
               return (
                 <tr key={c.id}>
                   <td data-label="Name">

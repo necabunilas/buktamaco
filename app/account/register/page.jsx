@@ -1,6 +1,7 @@
 import { requestRegisterOtp } from '../actions';
 import { getCustomer } from '@/lib/customer-auth';
 import { redirect } from 'next/navigation';
+import MapPicker from '../MapPicker';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,8 +32,7 @@ export default async function RegisterPage({ searchParams }) {
           <input id="contact" name="contact" inputMode="numeric" placeholder="0917xxxxxxx" required style={{ width: '100%' }} />
         </div>
         <div style={{ marginBottom: '0.75rem' }}>
-          <label htmlFor="address">Delivery address *</label>
-          <input id="address" name="address" placeholder="House/street, barangay, city" required style={{ width: '100%' }} />
+          <MapPicker />
         </div>
         <button className="btn btn-gold" type="submit" style={{ width: '100%' }}>Send verification code</button>
       </form>

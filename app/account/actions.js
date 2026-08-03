@@ -23,10 +23,17 @@ function isExpired(s) {
   return new Date(s.replace(' ', 'T') + 'Z') < new Date();
 }
 
+function parseCoord(v) {
+  const n = parseFloat(v);
+  return Number.isFinite(n) ? n : null;
+}
+
 export async function requestRegisterOtp(formData) {
   const name = (formData.get('name') || '').toString().trim();
   const address = (formData.get('address') || '').toString().trim();
   const contact = normalize(formData.get('contact'));
+  const latitude = parseCoord(formData.get('latitude'));
+  const longitude = parseCoord(formData.get('longitude'));
 
   if (!name || !address) redirect('/account/register?error=missing');
   if (!/^09\d{9}$/.test(contact)) redirect('/account/register?error=phone');
@@ -36,7 +43,7 @@ export async function requestRegisterOtp(formData) {
 
   const code = genCode();
   await db.delete(otpCodes).where(and(eq(otpCodes.contact, contact), eq(otpCodes.purpose, 'register'))).run();
-  await db.insert(otpCodes).values({ contact, code, purpose: 'register', name, address, expiresAt: sqlExpiry(5) }).run();
+  await db.insert(otpCodes).values({ contact, code, purpose: 'register', name, address, latitude, longitude, expiresAt: sqlExpiry(5) }).run();
   await sendSms(contact, `Your BukTamaCo verification code is ${code}. Valid for 5 minutes.`);
 
   redirect(`/account/verify?contact=${encodeURIComponent(contact)}&purpose=register`);
@@ -80,7 +87,7 @@ export async function resendOtp(formData) {
   await db.delete(otpCodes).where(and(eq(otpCodes.contact, contact), eq(otpCodes.purpose, purpose))).run();
   await db
     .insert(otpCodes)
-    .values({ contact, code, purpose, name: prev.name, address: prev.address, expiresAt: sqlExpiry(5) })
+    .values({ contact, code, purpose, name: prev.name, address: prev.address, latitude: prev.latitude, longitude: prev.longitude, expiresAt: sqlExpiry(5) })
     .run();
   await sendSms(contact, `Your BukTamaCo code is ${code}. Valid for 5 minutes.`);
 
@@ -110,7 +117,7 @@ export async function verifyOtp(formData) {
     } else {
       const r = await db
         .insert(customers)
-        .values({ name: row.name, contact, address: row.address })
+        .values({ name: row.name, contact, address: row.address, latitude: row.latitude, longitude: row.longitude })
         .run();
       customerId = Number(r.lastInsertRowid);
     }

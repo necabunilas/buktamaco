@@ -48,6 +48,8 @@ export async function createOrder(formData) {
       customerName,
       customerContact,
       address,
+      latitude: customer.latitude,
+      longitude: customer.longitude,
       note,
       status: 'PENDING',
       total,

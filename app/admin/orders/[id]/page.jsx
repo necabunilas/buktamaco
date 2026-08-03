@@ -36,9 +36,12 @@ export default async function AdminOrderDetail({ params, searchParams }) {
     : null;
   const open = order.status === 'PENDING' || order.status === 'CONFIRMED';
   const itemCount = items.reduce((n, it) => n + it.qty, 0);
-  const mapsUrl = order.address
-    ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.address)}`
-    : null;
+  const mapsUrl =
+    order.latitude != null && order.longitude != null
+      ? `https://www.google.com/maps/search/?api=1&query=${order.latitude},${order.longitude}`
+      : order.address
+        ? `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(order.address)}`
+        : null;
 
   return (
     <div>
