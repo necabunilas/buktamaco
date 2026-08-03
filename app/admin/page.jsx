@@ -70,7 +70,7 @@ export default async function AdminDashboard() {
               {lowStock.map((p, i) => (
                 <div className="alert-item" key={i}>
                   <span>{p.name}</span>
-                  <span className="badge out">{p.qty} left · reorder at {p.reorder}</span>
+                  <span className="badge out">{p.qty} left · restock at {p.reorder}</span>
                 </div>
               ))}
             </div>

@@ -29,7 +29,7 @@ export default async function AdminInventory() {
           <tr>
             <th>Product</th>
             <th>On hand</th>
-            <th>Reorder at</th>
+            <th>Restock at</th>
             <th>Adjust</th>
           </tr>
         </thead>
@@ -40,7 +40,7 @@ export default async function AdminInventory() {
                 {r.name} {r.flavor ? `(${r.flavor})` : ''}
               </td>
               <td data-label="On hand" className={r.qty <= r.reorder ? 'low-stock' : ''}>{r.qty}</td>
-              <td data-label="Reorder at">{r.reorder}</td>
+              <td data-label="Restock at">{r.reorder}</td>
               <td data-label="Adjust">
                 <form action={restock} className="stock-adjust">
                   <input type="hidden" name="productId" value={r.productId} />
