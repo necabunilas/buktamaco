@@ -8,20 +8,22 @@ export const dynamic = 'force-dynamic';
 export default async function AdminDashboard() {
   if (!(await isStaff())) redirect('/admin/login');
 
-  const pending = await db.select({ c: sql`count(*)` }).from(orders).where(eq(orders.status, 'PENDING')).get();
-  const confirmed = await db.select({ c: sql`count(*)` }).from(orders).where(eq(orders.status, 'CONFIRMED')).get();
-  const paidToday = await db
-    .select({ c: sql`count(*)`, total: sql`coalesce(sum(total),0)` })
-    .from(orders)
-    .where(sql`status = 'PAID' AND date(paid_at, '+8 hours') = date('now', '+8 hours')`)
-    .get();
-
-  const lowStock = await db
-    .select({ name: products.name, qty: inventory.qtyOnHand, reorder: inventory.reorderLevel })
-    .from(inventory)
-    .leftJoin(products, eq(products.id, inventory.productId))
-    .where(sql`${inventory.qtyOnHand} <= ${inventory.reorderLevel}`)
-    .all();
+  // Run all dashboard queries in parallel to cut total DB latency.
+  const [pending, confirmed, paidToday, lowStock] = await Promise.all([
+    db.select({ c: sql`count(*)` }).from(orders).where(eq(orders.status, 'PENDING')).get(),
+    db.select({ c: sql`count(*)` }).from(orders).where(eq(orders.status, 'CONFIRMED')).get(),
+    db
+      .select({ c: sql`count(*)`, total: sql`coalesce(sum(total),0)` })
+      .from(orders)
+      .where(sql`status = 'PAID' AND date(paid_at, '+8 hours') = date('now', '+8 hours')`)
+      .get(),
+    db
+      .select({ name: products.name, qty: inventory.qtyOnHand, reorder: inventory.reorderLevel })
+      .from(inventory)
+      .leftJoin(products, eq(products.id, inventory.productId))
+      .where(sql`${inventory.qtyOnHand} <= ${inventory.reorderLevel}`)
+      .all(),
+  ]);
 
   const paidTotal = Number(paidToday.total);
 

@@ -353,6 +353,21 @@ h2 { font-size: 1.6rem; margin-top: 0; }
   border-radius: 8px;
 }
 .admin-nav a:hover { background: var(--cream); color: var(--accent-dark); }
+.nav-with-badge { display: inline-flex; align-items: center; gap: 0.35rem; }
+.nav-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 999px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
 
 .page-head {
   display: flex;
