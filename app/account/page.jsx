@@ -4,6 +4,7 @@ import { getCustomer } from '@/lib/customer-auth';
 import { redirect } from 'next/navigation';
 import { logoutCustomer } from './actions';
 import { formatPHDateTime } from '@/lib/format';
+import MapView from './MapView';
 
 export const dynamic = 'force-dynamic';
 
@@ -31,6 +32,11 @@ export default async function AccountPage() {
         <p style={{ margin: '0 0 0.25rem' }}><strong>{customer.name}</strong>{customer.isVip && <span className="badge" style={{ marginLeft: '0.5rem', background: 'var(--gold)', color: '#4a2f00' }}>VIP</span>}</p>
         <p style={{ margin: '0 0 0.25rem', color: 'var(--muted)' }}>{customer.contact}</p>
         {customer.address && <p style={{ margin: 0, color: 'var(--muted)' }}>📍 {customer.address}</p>}
+        {customer.latitude != null && customer.longitude != null && (
+          <div style={{ marginTop: '0.75rem' }}>
+            <MapView lat={customer.latitude} lng={customer.longitude} height={170} />
+          </div>
+        )}
       </div>
 
       <p style={{ marginTop: '1.25rem' }}>

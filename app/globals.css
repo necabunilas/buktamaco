@@ -434,6 +434,14 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   position: relative;
   z-index: 0; /* keep Leaflet panes below the sticky header */
 }
+.map-view {
+  width: 100%;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 0;
+}
 
 /* ---------- Cart remove ---------- */
 .cart-remove {
@@ -525,6 +533,16 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   padding: 1rem 1.25rem;
 }
 .date-range label { margin-bottom: 0.25rem; }
+
+/* ---------- Customers table ---------- */
+.customers-table .cust-name { font-weight: 700; }
+.customers-table .cust-phone { display: inline-block; margin-top: 0.15rem; font-size: 0.9rem; color: var(--muted); }
+.customers-table .cust-address { max-width: 280px; }
+.customers-table .cust-address span { display: inline; }
+.customers-table tr.vip-row td { background: #fff8ea; }
+@media (min-width: 641px) {
+  .customers-table td { vertical-align: top; }
+}
 
 /* ---------- Filter tabs ---------- */
 .filter-tabs { display: flex; flex-wrap: wrap; gap: 0.4rem; }

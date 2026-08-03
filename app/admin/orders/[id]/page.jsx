@@ -4,6 +4,7 @@ import { isStaff } from '@/lib/auth';
 import { redirect, notFound } from 'next/navigation';
 import { confirmOrder, cancelOrder, markPaid } from '../../actions';
 import { formatPHDateTime } from '@/lib/format';
+import MapView from '@/app/account/MapView';
 
 export const dynamic = 'force-dynamic';
 
@@ -76,6 +77,11 @@ export default async function AdminOrderDetail({ params, searchParams }) {
               </a>
             )}
           </p>
+        )}
+        {order.latitude != null && order.longitude != null && (
+          <div style={{ marginTop: '0.75rem' }}>
+            <MapView lat={order.latitude} lng={order.longitude} height={200} />
+          </div>
         )}
         {order.note && <p className="order-note">Note: {order.note}</p>}
 
