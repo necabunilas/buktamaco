@@ -71,9 +71,9 @@ export default async function AdminOrderDetail({ params, searchParams }) {
         </div>
         {order.address && (
           <p className="order-note">
-            📍 {order.address}{' '}
+            📍 {order.address}
             {mapsUrl && (
-              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700 }}>
+              <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ display: 'block', marginTop: '0.35rem', fontWeight: 700 }}>
                 Open in Maps →
               </a>
             )}
