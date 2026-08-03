@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { createOrder } from '../actions';
+import { VIP_DISCOUNT_PERCENT } from '@/lib/shop';
 
 export default function OrderForm({ products, customer }) {
   const [qtys, setQtys] = useState({}); // { [productId]: qty }
@@ -20,7 +21,10 @@ export default function OrderForm({ products, customer }) {
     [products, qtys]
   );
 
-  const total = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+  const subtotal = cart.reduce((sum, c) => sum + c.price * c.qty, 0);
+  const discountPct = customer.isVip ? VIP_DISCOUNT_PERCENT : 0;
+  const discount = subtotal * (discountPct / 100);
+  const total = subtotal - discount;
 
   // Store the raw string exactly as typed — no coercion — so the field never
   // resets itself out from under the user (which was dropping items on blur).
@@ -116,6 +120,17 @@ export default function OrderForm({ products, customer }) {
                 ))}
               </tbody>
             </table>
+          </div>
+        )}
+
+        {discountPct > 0 && cart.length > 0 && (
+          <div style={{ marginTop: '1rem', color: 'var(--muted)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Subtotal</span><span>₱{subtotal.toFixed(2)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--accent-dark)' }}>
+              <span>VIP discount ({discountPct}%)</span><span>−₱{discount.toFixed(2)}</span>
+            </div>
           </div>
         )}
 

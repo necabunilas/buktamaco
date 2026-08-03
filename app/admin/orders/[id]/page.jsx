@@ -37,6 +37,7 @@ export default async function AdminOrderDetail({ params, searchParams }) {
     : null;
   const open = order.status === 'PENDING' || order.status === 'CONFIRMED';
   const itemCount = items.reduce((n, it) => n + it.qty, 0);
+  const subtotal = items.reduce((s, it) => s + it.unitPrice * it.qty, 0);
   const mapsUrl =
     order.latitude != null && order.longitude != null
       ? `https://www.google.com/maps/search/?api=1&query=${order.latitude},${order.longitude}`
@@ -100,6 +101,16 @@ export default async function AdminOrderDetail({ params, searchParams }) {
             ))}
           </tbody>
         </table>
+        {order.discountPercent > 0 && (
+          <div style={{ marginTop: '0.75rem', color: 'var(--muted)' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <span>Subtotal</span><span>₱{subtotal.toFixed(2)}</span>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--accent-dark)' }}>
+              <span>VIP discount ({order.discountPercent}%)</span><span>−₱{(subtotal - order.total).toFixed(2)}</span>
+            </div>
+          </div>
+        )}
         <div className="order-total">
           <span>Total ({itemCount} item{itemCount !== 1 ? 's' : ''})</span>
           <strong>₱{order.total.toFixed(2)}</strong>

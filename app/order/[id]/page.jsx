@@ -33,6 +33,7 @@ export default async function OrderStatusPage({ params }) {
     .all();
 
   const receipt = await db.select().from(receipts).where(eq(receipts.orderId, orderId)).get();
+  const subtotal = items.reduce((s, it) => s + it.unitPrice * it.qty, 0);
 
   return (
     <div>
@@ -73,6 +74,18 @@ export default async function OrderStatusPage({ params }) {
             ))}
           </tbody>
           <tfoot>
+            {order.discountPercent > 0 && (
+              <>
+                <tr>
+                  <td colSpan={3} style={{ textAlign: 'right', color: 'var(--muted)' }}>Subtotal</td>
+                  <td style={{ textAlign: 'right', color: 'var(--muted)' }}>₱{subtotal.toFixed(2)}</td>
+                </tr>
+                <tr>
+                  <td colSpan={3} style={{ textAlign: 'right', color: 'var(--accent-dark)' }}>VIP discount ({order.discountPercent}%)</td>
+                  <td style={{ textAlign: 'right', color: 'var(--accent-dark)' }}>−₱{(subtotal - order.total).toFixed(2)}</td>
+                </tr>
+              </>
+            )}
             <tr>
               <td colSpan={3} style={{ textAlign: 'right', fontWeight: 600 }}>
                 Total

@@ -5,6 +5,7 @@ import { inArray, eq } from 'drizzle-orm';
 import { redirect } from 'next/navigation';
 import { sendSms } from '@/lib/sms';
 import { getCustomer } from '@/lib/customer-auth';
+import { VIP_DISCOUNT_PERCENT } from '@/lib/shop';
 
 // Creates a PENDING order from the customer's cart. Requires a logged-in customer.
 // Each product's quantity is submitted as its own field: qty_<productId>
@@ -33,13 +34,17 @@ export async function createOrder(formData) {
   const found = await db.select().from(products).where(inArray(products.id, ids)).all();
   const priceById = new Map(found.map((p) => [p.id, p.price]));
 
-  let total = 0;
+  let subtotal = 0;
   const lines = cart.map((c) => {
     const unitPrice = priceById.get(c.productId);
     if (unitPrice == null) throw new Error('A product in your cart is no longer available.');
-    total += unitPrice * c.qty;
+    subtotal += unitPrice * c.qty;
     return { productId: c.productId, qty: c.qty, unitPrice };
   });
+
+  // Apply the VIP discount to the total for VIP customers.
+  const discountPercent = customer.isVip ? VIP_DISCOUNT_PERCENT : 0;
+  const total = subtotal * (1 - discountPercent / 100);
 
   const result = await db
     .insert(orders)
@@ -52,6 +57,7 @@ export async function createOrder(formData) {
       longitude: customer.longitude,
       note,
       status: 'PENDING',
+      discountPercent,
       total,
     })
     .run();

@@ -31,6 +31,8 @@ export default async function ReceiptPage({ params }) {
     .where(eq(orderItems.orderId, orderId))
     .all();
 
+  const subtotal = items.reduce((s, it) => s + it.unitPrice * it.qty, 0);
+
   return (
     <div className="receipt-wrap">
       <PrintButton orderId={order.id} />
@@ -64,6 +66,12 @@ export default async function ReceiptPage({ params }) {
         </table>
 
         <div className="receipt-totals">
+          {order.discountPercent > 0 && (
+            <>
+              <div><span>Subtotal</span><strong>₱{subtotal.toFixed(2)}</strong></div>
+              <div><span>VIP discount ({order.discountPercent}%)</span><strong>−₱{(subtotal - order.total).toFixed(2)}</strong></div>
+            </>
+          )}
           <div><span>Total</span><strong>₱{order.total.toFixed(2)}</strong></div>
           <div><span>Cash</span><strong>₱{(order.cashReceived ?? 0).toFixed(2)}</strong></div>
           <div><span>Change</span><strong>₱{(order.changeDue ?? 0).toFixed(2)}</strong></div>

@@ -87,6 +87,7 @@ Statuses: `PENDING → CONFIRMED → PAID → COMPLETED`, plus `CANCELLED`.
 - Shop branding/contact details for info page
 
 ## Future features (post-deployment)
+- **Unverify / remove customer:** let staff mark a customer as invalid/unverified (e.g. scam or fake), which blocks them from ordering. Add to the Customers admin page (a "Remove"/"Block" action alongside the VIP toggle).
 - SMS notifications to customers on order events (confirmed / paid / ready for pickup).
   - Call an SMS gateway API from server actions (confirmOrder / markPaid).
   - Provider: Semaphore recommended (PH-focused, ~P0.50/SMS, custom sender ID "BUKTAMACO").

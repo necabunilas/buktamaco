@@ -537,11 +537,20 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
 /* ---------- Customers table ---------- */
 .customers-table .cust-name { font-weight: 700; }
 .customers-table .cust-phone { display: inline-block; margin-top: 0.15rem; font-size: 0.9rem; color: var(--muted); }
-.customers-table .cust-address { max-width: 280px; }
-.customers-table .cust-address span { display: inline; }
+.customers-table .cust-address {
+  max-width: 300px;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+.customers-table .cust-address span { display: block; }
 .customers-table tr.vip-row td { background: #fff8ea; }
 @media (min-width: 641px) {
   .customers-table td { vertical-align: top; }
+}
+/* On mobile cards, keep the address readable and wrapping within the card */
+@media (max-width: 640px) {
+  .customers-table .cust-address { max-width: 100%; text-align: right; }
+  .customers-table .cust-address span { display: inline; }
 }
 
 /* ---------- Filter tabs ---------- */
