@@ -1,5 +1,5 @@
-import { db, customers } from '@/lib/db';
-import { sql, desc } from 'drizzle-orm';
+import { db, customers, orders } from '@/lib/db';
+import { sql, desc, eq } from 'drizzle-orm';
 import { isStaff } from '@/lib/auth';
 import { redirect } from 'next/navigation';
 import { toggleVip } from '../actions';
@@ -22,10 +22,12 @@ export default async function AdminCustomers() {
       longitude: customers.longitude,
       isVip: customers.isVip,
       createdAt: customers.createdAt,
-      orderCount: sql`(SELECT count(*) FROM orders o WHERE o.customer_id = ${customers.id})`,
-      totalSpent: sql`(SELECT coalesce(sum(total),0) FROM orders o WHERE o.customer_id = ${customers.id} AND o.status = 'PAID')`,
+      orderCount: sql`count(${orders.id})`,
+      totalSpent: sql`coalesce(sum(case when ${orders.status} = 'PAID' then ${orders.total} else 0 end), 0)`,
     })
     .from(customers)
+    .leftJoin(orders, eq(orders.customerId, customers.id))
+    .groupBy(customers.id)
     .orderBy(desc(customers.createdAt))
     .all();
 
@@ -80,12 +82,14 @@ export default async function AdminCustomers() {
                     <a className="cust-phone" href={`tel:${c.contact}`}>📞 {c.contact}</a>
                   </td>
                   <td data-label="Address" className="cust-address">
-                    <span>{c.address || '—'}</span>
-                    {mapsUrl && (
-                      <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
-                        Map →
-                      </a>
-                    )}
+                    <div>
+                      <span>{c.address || '—'}</span>{' '}
+                      {mapsUrl && (
+                        <a href={mapsUrl} target="_blank" rel="noopener noreferrer" style={{ fontWeight: 700, whiteSpace: 'nowrap' }}>
+                          Map →
+                        </a>
+                      )}
+                    </div>
                   </td>
                   <td data-label="Orders" style={{ textAlign: 'center' }}>{Number(c.orderCount)}</td>
                   <td data-label="Spent" style={{ textAlign: 'right', fontWeight: 700 }}>{peso(c.totalSpent)}</td>

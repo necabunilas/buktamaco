@@ -537,8 +537,8 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
 /* ---------- Customers table ---------- */
 .customers-table .cust-name { font-weight: 700; }
 .customers-table .cust-phone { display: inline-block; margin-top: 0.15rem; font-size: 0.9rem; color: var(--muted); }
-.customers-table .cust-address {
-  max-width: 300px;
+.customers-table .cust-address > div {
+  max-width: 320px;
   overflow-wrap: anywhere;
   word-break: break-word;
 }
@@ -547,10 +547,25 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
 @media (min-width: 641px) {
   .customers-table td { vertical-align: top; }
 }
-/* On mobile cards, keep the address readable and wrapping within the card */
+/* On mobile cards: Customer as a left-aligned header, rest as label/value rows */
 @media (max-width: 640px) {
-  .customers-table .cust-address { max-width: 100%; text-align: right; }
+  .customers-table td[data-label="Customer"] {
+    display: block;
+    text-align: left;
+    padding-bottom: 0.6rem;
+    margin-bottom: 0.3rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .customers-table td[data-label="Customer"]::before { content: none; }
+  .customers-table .cust-name { font-size: 1.05rem; }
+  .customers-table .cust-phone { display: block; margin-top: 0.15rem; }
+
+  .customers-table .cust-address > div { max-width: 100%; text-align: right; }
   .customers-table .cust-address span { display: inline; }
+
+  .customers-table td:last-child { display: block; }
+  .customers-table td:last-child::before { content: none; }
+  .customers-table td:last-child .stock-btn { width: 100%; margin-top: 0.35rem; }
 }
 
 /* ---------- Filter tabs ---------- */
@@ -593,7 +608,10 @@ table { width: 100%; border-collapse: collapse; }
     border: none;
     border-bottom: 1px solid var(--border);
     text-align: right;
+    min-width: 0;
   }
+  /* Let long content (e.g. addresses) shrink and wrap instead of widening the card */
+  .responsive-table td > * { min-width: 0; overflow-wrap: anywhere; word-break: break-word; }
   .responsive-table tr td:last-child { border-bottom: none; }
   .responsive-table td::before {
     content: attr(data-label);
@@ -642,9 +660,7 @@ label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 
 
 /* ---------- Responsive ---------- */
 
-/* Wide admin tables scroll horizontally instead of overflowing / squishing. */
 @media (max-width: 760px) {
-  table { display: block; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; }
   .admin-nav { gap: 0.15rem; }
   .admin-nav a { padding: 0.35rem 0.55rem; font-size: 0.9rem; }
   .stat-grid { grid-template-columns: 1fr 1fr; gap: 0.75rem; }
