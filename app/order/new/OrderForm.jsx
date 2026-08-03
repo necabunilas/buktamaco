@@ -40,6 +40,11 @@ export default function OrderForm({ products }) {
     });
   }
 
+  // Remove a line from the order (clears its quantity field).
+  function removeItem(productId) {
+    setQtys((prev) => ({ ...prev, [productId]: '' }));
+  }
+
   return (
     <form action={createOrder} style={{ marginTop: '1rem' }}>
       <div className="grid">
@@ -97,6 +102,17 @@ export default function OrderForm({ products }) {
                     <td>{c.name}</td>
                     <td style={{ textAlign: 'center' }}>×{c.qty}</td>
                     <td style={{ textAlign: 'right' }}>₱{(c.price * c.qty).toFixed(2)}</td>
+                    <td style={{ textAlign: 'right', width: 34 }}>
+                      <button
+                        type="button"
+                        className="cart-remove"
+                        onClick={() => removeItem(c.productId)}
+                        aria-label={`Remove ${c.name}`}
+                        title="Remove"
+                      >
+                        ×
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>

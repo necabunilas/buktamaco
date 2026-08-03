@@ -424,6 +424,21 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   font-weight: 600;
 }
 
+/* ---------- Cart remove ---------- */
+.cart-remove {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: #fff;
+  color: var(--warn);
+  font-size: 1.1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.cart-remove:hover { background: #fbe6e6; border-color: #f2c4c4; }
+
 /* ---------- Inventory adjust ---------- */
 .stock-adjust { display: flex; gap: 0.4rem; align-items: center; }
 .stock-amount { width: 68px; text-align: center; }
