@@ -1,14 +1,25 @@
 import './globals.css';
+import ServiceWorker from './ServiceWorker';
 
 export const metadata = {
   title: 'BukTamaCo — Fresh Carabao Milk',
   description: 'Fresh 1 liter carabao milk, plain and flavored.',
+  appleWebApp: {
+    capable: true,
+    title: 'BukTamaCo',
+    statusBarStyle: 'default',
+  },
+};
+
+export const viewport = {
+  themeColor: '#cc0000',
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <ServiceWorker />
         <header className="site-header">
           <a className="brand" href="/">
             <img src="/logo.jpeg" alt="" />
