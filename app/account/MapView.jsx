@@ -6,7 +6,8 @@ import 'leaflet/dist/leaflet.css';
 const ICON_BASE = 'https://unpkg.com/leaflet@1.9.4/dist/images';
 
 // Read-only mini map showing a single pin at [lat, lng].
-export default function MapView({ lat, lng, zoom = 16, height = 180 }) {
+// Pass `height` for a fixed px height, or `className` to control height via CSS.
+export default function MapView({ lat, lng, zoom = 16, height, className = '' }) {
   const containerRef = useRef(null);
   const mapRef = useRef(null);
 
@@ -39,5 +40,11 @@ export default function MapView({ lat, lng, zoom = 16, height = 180 }) {
     };
   }, [lat, lng, zoom]);
 
-  return <div ref={containerRef} className="map-view" style={{ height }} />;
+  return (
+    <div
+      ref={containerRef}
+      className={`map-view ${className}`.trim()}
+      style={height ? { height } : undefined}
+    />
+  );
 }

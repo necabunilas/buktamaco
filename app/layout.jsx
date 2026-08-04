@@ -1,5 +1,6 @@
 import './globals.css';
 import ServiceWorker from './ServiceWorker';
+import NavMenu from './NavMenu';
 
 export const metadata = {
   title: 'BukTamaCo — Fresh Carabao Milk',
@@ -17,20 +18,15 @@ export const viewport = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en">
-      <body>
+    <html lang="en" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <ServiceWorker />
         <header className="site-header">
           <a className="brand" href="/">
             <img src="/logo.jpeg" alt="" />
             BUKTAMACO
           </a>
-          <nav>
-            <a href="/products">Products</a>
-            <a href="/order/new">Order</a>
-            <a href="/account">Account</a>
-            <a href="/admin">Staff</a>
-          </nav>
+          <NavMenu />
         </header>
         <main className="container">{children}</main>
         <footer className="site-footer">

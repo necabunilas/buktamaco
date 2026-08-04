@@ -29,12 +29,12 @@ export default async function AccountPage() {
       </div>
 
       <div className="card">
-        <p style={{ margin: '0 0 0.25rem' }}><strong>{customer.name}</strong>{customer.isVip && <span className="badge" style={{ marginLeft: '0.5rem', background: 'var(--gold)', color: '#4a2f00' }}>VIP</span>}</p>
-        <p style={{ margin: '0 0 0.25rem', color: 'var(--muted)' }}>{customer.contact}</p>
+        <p style={{ margin: '0 0 0.25rem' }}><strong>{customer.name}</strong>{customer.isVip && <span className="vip-badge">VIP</span>}</p>
+        <p style={{ margin: '0 0 0.25rem', color: 'var(--muted)' }}>📞 {customer.contact}</p>
         {customer.address && <p style={{ margin: 0, color: 'var(--muted)' }}>📍 {customer.address}</p>}
         {customer.latitude != null && customer.longitude != null && (
           <div style={{ marginTop: '0.75rem' }}>
-            <MapView lat={customer.latitude} lng={customer.longitude} height={170} />
+            <MapView lat={customer.latitude} lng={customer.longitude} className="account-map" />
           </div>
         )}
       </div>

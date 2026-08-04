@@ -98,16 +98,19 @@ h2 { font-size: 1.6rem; margin-top: 0; }
   border-radius: 50%;
   display: block;
 }
-.site-header nav { display: flex; gap: 0.5rem; }
-.site-header nav a {
+.site-header .site-nav { display: flex; gap: 0.5rem; }
+.site-header .site-nav a {
   color: var(--ink);
   font-size: 0.95rem;
   padding: 0.4rem 0.7rem;
   border-radius: 8px;
 }
-.site-header nav a:hover { background: var(--cream); color: var(--accent-dark); }
+.site-header .site-nav a:hover { background: var(--cream); color: var(--accent-dark); }
 
-.container { max-width: 1040px; margin: 0 auto; padding: 1.75rem 1.5rem 3rem; }
+/* Hamburger toggle — hidden on desktop, shown on mobile */
+.nav-toggle { display: none; }
+
+.container { width: 100%; max-width: 1040px; margin: 0 auto; padding: 1.75rem 1.5rem 3rem; }
 
 /* ---------- Footer ---------- */
 .site-footer {
@@ -442,6 +445,11 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   position: relative;
   z-index: 0;
 }
+/* Account map: modest on mobile, taller on desktop */
+.map-view.account-map { height: 180px; }
+@media (min-width: 701px) {
+  .map-view.account-map { height: 280px; }
+}
 
 /* ---------- Cart remove ---------- */
 .cart-remove {
@@ -560,12 +568,19 @@ a.stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover)
   .customers-table .cust-name { font-size: 1.05rem; }
   .customers-table .cust-phone { display: block; margin-top: 0.15rem; }
 
-  .customers-table .cust-address > div { max-width: 100%; text-align: right; }
+  /* Stack the address under its label, left-aligned (long text reads cleaner) */
+  .customers-table .cust-address { flex-direction: column; align-items: flex-start; text-align: left; gap: 0.15rem; }
+  .customers-table .cust-address > div { max-width: 100%; text-align: left; }
   .customers-table .cust-address span { display: inline; }
+  .customers-table .cust-address a { display: block; margin-top: 0.2rem; }
 
   .customers-table td:last-child { display: block; }
   .customers-table td:last-child::before { content: none; }
   .customers-table td:last-child .stock-btn { width: 100%; margin-top: 0.35rem; }
+
+  /* VIP highlight fills the whole card (not per-cell) on mobile */
+  .customers-table tr.vip-row { background: #fff8ea; }
+  .customers-table tr.vip-row td { background: transparent; }
 }
 
 /* ---------- Filter tabs ---------- */
@@ -671,8 +686,50 @@ label { display: block; font-size: 0.85rem; color: var(--muted); margin-bottom: 
   .site-header { padding: 0.55rem 0.9rem; gap: 0.5rem; }
   .site-header .brand { font-size: 1.2rem; gap: 0.4rem; }
   .site-header .brand img { height: 30px; width: 30px; }
-  .site-header nav { gap: 0.15rem; }
-  .site-header nav a { padding: 0.35rem 0.5rem; font-size: 0.88rem; }
+
+  /* Hamburger menu */
+  .nav-toggle {
+    display: inline-flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    width: 42px;
+    height: 42px;
+    padding: 9px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  .nav-toggle span {
+    display: block;
+    width: 100%;
+    height: 2.5px;
+    background: var(--accent);
+    border-radius: 2px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+  .nav-toggle.open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+  .nav-toggle.open span:nth-child(2) { opacity: 0; }
+  .nav-toggle.open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+
+  .site-header .site-nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0.15rem;
+    background: var(--card);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+    padding: 0.5rem;
+    z-index: 20;
+  }
+  .site-header .site-nav.open { display: flex; }
+  .site-header .site-nav a { padding: 0.8rem 1rem; font-size: 1rem; }
+
   .container { padding: 1.25rem 1rem 2.5rem; }
   h1 { font-size: 1.8rem; }
   h2 { font-size: 1.4rem; }
