@@ -16,7 +16,7 @@ export default function NavMenu() {
         <span />
         <span />
       </button>
-      <nav className={`site-nav${open ? ' open' : ''}`} onClick={() => setOpen(false)}>
+      <nav className={`site-nav${open ? ' open' : ''}`}>
         <a href="/products">Products</a>
         <a href="/order/new">Order</a>
         <a href="/account">Account</a>

@@ -105,7 +105,9 @@ h2 { font-size: 1.6rem; margin-top: 0; }
   padding: 0.4rem 0.7rem;
   border-radius: 8px;
 }
-.site-header .site-nav a:hover { background: var(--cream); color: var(--accent-dark); }
+@media (hover: hover) {
+  .site-header .site-nav a:hover { background: var(--cream); color: var(--accent-dark); }
+}
 
 /* Hamburger toggle — hidden on desktop, shown on mobile */
 .nav-toggle { display: none; }
