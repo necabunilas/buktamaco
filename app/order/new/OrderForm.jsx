@@ -1,11 +1,29 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import { useFormStatus } from 'react-dom';
 import { createOrder } from '../actions';
 import { VIP_DISCOUNT_PERCENT } from '@/lib/shop';
 
+// Disables itself while the order is submitting so a double-tap can't
+// fire the server action twice (paired with a server-side idempotency key).
+function SubmitButton({ disabled }) {
+  const { pending } = useFormStatus();
+  return (
+    <button className="btn" type="submit" disabled={disabled || pending}>
+      {pending ? 'Submitting…' : 'Submit Order'}
+    </button>
+  );
+}
+
 export default function OrderForm({ products, customer }) {
   const [qtys, setQtys] = useState({}); // { [productId]: qty }
+  // One key per form load; reused if the user somehow submits twice.
+  const [idempotencyKey] = useState(() =>
+    typeof crypto !== 'undefined' && crypto.randomUUID
+      ? crypto.randomUUID()
+      : `${Date.now()}-${Math.round(Math.random() * 1e9)}`
+  );
 
   const cart = useMemo(
     () =>
@@ -51,6 +69,7 @@ export default function OrderForm({ products, customer }) {
 
   return (
     <form action={createOrder} style={{ marginTop: '1rem' }}>
+      <input type="hidden" name="idempotencyKey" value={idempotencyKey} />
       <div className="grid">
         {products.map((p) => (
           <div className="product-card" key={p.id}>
@@ -136,9 +155,7 @@ export default function OrderForm({ products, customer }) {
 
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '1rem' }}>
           <strong>Total: ₱{total.toFixed(2)}</strong>
-          <button className="btn" type="submit" disabled={cart.length === 0}>
-            Submit Order
-          </button>
+          <SubmitButton disabled={cart.length === 0} />
         </div>
         {cart.length === 0 && (
           <p style={{ color: 'var(--muted)', marginBottom: 0 }}>Add at least one item to submit.</p>

@@ -17,8 +17,19 @@ export async function createOrder(formData) {
   const customerContact = customer.contact;
   const address = (formData.get('address') || '').toString().trim() || customer.address || '';
   const note = (formData.get('note') || '').toString().trim();
+  const idempotencyKey = (formData.get('idempotencyKey') || '').toString().trim() || null;
 
   if (!address) throw new Error('Delivery address is required.');
+
+  // Dedupe double submissions: if this form was already submitted, reuse that order.
+  if (idempotencyKey) {
+    const existing = await db
+      .select({ id: orders.id })
+      .from(orders)
+      .where(eq(orders.idempotencyKey, idempotencyKey))
+      .get();
+    if (existing) redirect(`/order/${existing.id}`);
+  }
 
   // Collect every qty_<productId> field with a positive quantity.
   const cart = [];
@@ -46,22 +57,37 @@ export async function createOrder(formData) {
   const discountPercent = customer.isVip ? VIP_DISCOUNT_PERCENT : 0;
   const total = subtotal * (1 - discountPercent / 100);
 
-  const result = await db
-    .insert(orders)
-    .values({
-      customerId: customer.id,
-      customerName,
-      customerContact,
-      address,
-      latitude: customer.latitude,
-      longitude: customer.longitude,
-      note,
-      status: 'PENDING',
-      discountPercent,
-      total,
-    })
-    .run();
-  const orderId = Number(result.lastInsertRowid);
+  let orderId;
+  try {
+    const result = await db
+      .insert(orders)
+      .values({
+        customerId: customer.id,
+        customerName,
+        customerContact,
+        address,
+        latitude: customer.latitude,
+        longitude: customer.longitude,
+        note,
+        status: 'PENDING',
+        discountPercent,
+        total,
+        idempotencyKey,
+      })
+      .run();
+    orderId = Number(result.lastInsertRowid);
+  } catch (err) {
+    // Race: a concurrent submit with the same key won the insert. Reuse it.
+    if (idempotencyKey) {
+      const existing = await db
+        .select({ id: orders.id })
+        .from(orders)
+        .where(eq(orders.idempotencyKey, idempotencyKey))
+        .get();
+      if (existing) redirect(`/order/${existing.id}`);
+    }
+    throw err;
+  }
 
   for (const l of lines) {
     await db.insert(orderItems).values({ orderId, ...l }).run();
